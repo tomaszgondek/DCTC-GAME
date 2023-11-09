@@ -177,7 +177,7 @@ while True:
     # hit collisions, score and animations
     getHits = pygame.sprite.groupcollide(flies, bullets, True, True)
     for hit in getHits:
-        explosion = Explosion2Firework(hit.rect.centerx, hit.rect.centery, 150)
+        explosion = Explosion2Firework(hit.rect.centerx, hit.rect.centery, 250)
         explosions.add(explosion)
         print(hit)
         score = int(score)
