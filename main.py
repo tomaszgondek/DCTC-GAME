@@ -140,7 +140,7 @@ class Explosion2Firework(pygame.sprite.Sprite):
 bullets = pygame.sprite.Group()
 flies = pygame.sprite.Group()
 explosions = pygame.sprite.Group()
-theCat = CAT((600,700))
+theCat = CAT((600, 700))
 
 # Custom events
 createEnemyEvent, t = pygame.USEREVENT+1, 1000
