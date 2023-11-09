@@ -7,8 +7,8 @@ screen = pygame.display.set_mode((1200, 800))
 font = pygame.font.Font('font/FFFFORWA.TTF', 50)
 clock = pygame.time.Clock()
 pygame.display.set_caption("Don't Crash the cat: Back for Blood")
-score = '0'
-scoreImg = font.render(score, True, (0, 0, 0))
+score = 0
+scoreImg = font.render(str(score), True, (0, 0, 0))
 
 # static graphics load
 skyblock = pygame.image.load('graphics/placeholder_background.jpg').convert()
@@ -180,10 +180,9 @@ while True:
     for hit in getHits:
         explosion = Explosion2Firework(hit.rect.centerx, hit.rect.centery, 250)
         explosions.add(explosion)
-        score = int(score)
         score += 1
-        score = str(score)
-        scoreImg = font.render(score, True, (0, 0, 0))
+        scorestr = score
+        scoreImg = font.render(str(scorestr), True, (0, 0, 0))
     explosions.draw(screen)
     explosions.update()
     screen.blit(scoreImg, (10, 10))
