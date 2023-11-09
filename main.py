@@ -169,10 +169,9 @@ while True:
             flies.remove(fly)
     for bullet in bullets:
         bullet.update()
+        bullet.draw(screen)
         if not screen.get_rect().collidepoint(bullet.pos):
             bullets.remove(bullet)
-    for bullet in bullets:
-        bullet.draw(screen)
     for fly in flies:
         flies.draw(screen)
     # hit collisions, score and animations
