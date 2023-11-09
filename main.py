@@ -160,6 +160,7 @@ while True:
             bullets.add(Bullet(*(theCat.rect.x + 40, theCat.rect.y + 25)))
         if event.type == createEnemyEvent:
             flies.add(FlyEnemy(random.randrange(100, 1100), 0))
+            flies.add(FlyEnemy(random.randrange(100, 1100), 0))
     # updating player
     theCat.updateSprite(screen)
     # handling enemies and bullets
@@ -179,10 +180,8 @@ while True:
     for hit in getHits:
         explosion = Explosion2Firework(hit.rect.centerx, hit.rect.centery, 250)
         explosions.add(explosion)
-        print(hit)
         score = int(score)
         score += 1
-        print(score)
         score = str(score)
         scoreImg = font.render(score, True, (0, 0, 0))
     explosions.draw(screen)
