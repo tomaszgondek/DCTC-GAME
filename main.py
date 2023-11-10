@@ -23,8 +23,50 @@ class CAT(pygame.sprite.Sprite):
         self.rect.center = pos
         self.playerSpeed = 5
         self.bulletType = 1
-        self.hp = 100
+        self.currentHP = 200
+        self.maxHP = 1000
+        self.targetHP = 200
+        self.hpBarLen = 200
+        self.hpRatio = self.maxHP / self.currentHP
+        self.hpChangeSpeed = 5
         self.isAlive = True
+
+    def getDamage(self, amount):
+        if self.targetHP > 0:
+            self.targetHP -= amount
+        if self.targetHP < 0:
+            self.targetHP = 0
+
+    def getHealth(self, amount):
+        if self.targetHP < self.maxHP:
+            self.targetHP += amount
+        if self.targetHP > self.maxHP:
+            self.targetHP = self.maxHP
+
+    def hpBar(self):
+        pygame.draw.rect(screen, (255, 0, 0), (40, screen.get_height() - 65, self.targetHP / self.hpRatio, 25))
+        pygame.draw.rect(screen, (255, 255, 255), (40, screen.get_height() - 65, self.hpBarLen, 25), 4)
+
+
+    # guwno nie dziala
+    def hpBarv2(self):
+        transition_width = 0
+        transition_color = (255, 0, 0)
+        if self.currentHP < self.targetHP:
+            self.currentHP += self.targetHP
+            transition_width = int((self.targetHP - self.currentHP) / self.targetHP)
+            transition_color = (0, 255, 0)
+        if self.currentHP > self.targetHP:
+            self.currentHP -= self.hpChangeSpeed
+            transition_width = int((self.targetHP - self.currentHP) / self.hpRatio)
+            transition_color = (255, 255, 0)
+        health_bar_width = int(self.currentHP / self.hpRatio)
+        health_bar = pygame.Rect(10, 45, health_bar_width, 25)
+        transition_bar = pygame.Rect(health_bar.right, 45, transition_width, 25)
+        pygame.draw.rect(screen, (255, 0, 0), health_bar)
+        pygame.draw.rect(screen, transition_color, transition_bar)
+        pygame.draw.rect(screen, (255, 255, 255), (10, 45, self.hpBarLen, 25), 4)
+
 
     def moveRight(self, pixels):
         self.rect.x += pixels
@@ -60,11 +102,12 @@ class CAT(pygame.sprite.Sprite):
     def draw(self, surface):
         surface.blit(self.image, (self.rect.x, self.rect.y))
 
+
     def updateSprite(self, surface):
+        self.hpBar()
         self.playerInput()
         self.draw(surface)
-        if self.hp < 0:
-            self.isAlive = False
+
 
 
 class Bullet(pygame.sprite.Sprite):
@@ -169,6 +212,7 @@ while True:
         if event.type == pygame.MOUSEBUTTONDOWN:
             bullets.add(Bullet(*(theCat.rect.x + 20, theCat.rect.y + 25)))
             bullets.add(Bullet(*(theCat.rect.x + 40, theCat.rect.y + 25)))
+            theCat.getHealth(10)
         if event.type == createEnemyEvent:
             partridgesNormal.add(PartridgeNormal(random.randrange(100, 1100), 0, 100, 5))
             partridgesNormal.add(PartridgeNormal(random.randrange(100, 1100), 0, 100, 5))
@@ -179,6 +223,7 @@ while True:
         partridge.update()
         if partridge.rect.y > screen.get_height():
             partridgesNormal.remove(partridge)
+            theCat.getDamage(10)
     for bullet in bullets:
         bullet.update()
         bullet.draw(screen)
