@@ -23,11 +23,11 @@ class CAT(pygame.sprite.Sprite):
         self.rect.center = pos
         self.playerSpeed = 5
         self.bulletType = 1
-        self.currentHP = 200
+        self.currentHP = 1000
         self.maxHP = 1000
-        self.targetHP = 200
+        self.targetHP = 1000
         self.hpBarLen = 200
-        self.hpRatio = self.maxHP / self.currentHP
+        self.hpRatio = self.maxHP / self.hpBarLen
         self.hpChangeSpeed = 5
         self.isAlive = True
 
