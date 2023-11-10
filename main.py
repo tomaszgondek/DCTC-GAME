@@ -13,6 +13,7 @@ scoreImg = font.render(str(score), True, (0, 0, 0))
 # static graphics load
 skyblock = pygame.image.load('graphics/placeholder_background.jpg').convert()
 
+
 # Sprites
 class CAT(pygame.sprite.Sprite):
     def __init__(self, pos):
@@ -20,11 +21,15 @@ class CAT(pygame.sprite.Sprite):
         self.image = pygame.image.load('graphics/pngegg.png').convert_alpha()
         self.rect = self.image.get_rect(midbottom=(64, 64))
         self.rect.center = pos
+        self.playerSpeed = 5
+        self.bulletType = 1
+        self.hp = 100
+        self.isAlive = True
 
     def moveRight(self, pixels):
         self.rect.x += pixels
-        if self.rect.x > 1200 - self.image.get_width():
-            self.rect.x = 1200 - self.image.get_width()
+        if self.rect.x > screen.get_width() - self.image.get_width():
+            self.rect.x = screen.get_width() - self.image.get_width()
 
     def moveLeft(self, pixels):
         self.rect.x -= pixels
@@ -38,19 +43,19 @@ class CAT(pygame.sprite.Sprite):
 
     def moveDown(self, pixels):
         self.rect.y += pixels
-        if self.rect.y > 800 - self.image.get_height():
-            self.rect.y = 800 - self.image.get_height()
+        if self.rect.y > screen.get_height() - self.image.get_height():
+            self.rect.y = screen.get_height() - self.image.get_height()
 
     def playerInput(self):
         keys = pygame.key.get_pressed()
         if keys[pygame.K_a]:
-            self.moveLeft(5)
+            self.moveLeft(self.playerSpeed)
         if keys[pygame.K_d]:
-            self.moveRight(5)
+            self.moveRight(self.playerSpeed)
         if keys[pygame.K_w]:
-            self.moveUp(5)
+            self.moveUp(self.playerSpeed)
         if keys[pygame.K_s]:
-            self.moveDown(5)
+            self.moveDown(self.playerSpeed)
 
     def draw(self, surface):
         surface.blit(self.image, (self.rect.x, self.rect.y))
@@ -58,6 +63,8 @@ class CAT(pygame.sprite.Sprite):
     def updateSprite(self, surface):
         self.playerInput()
         self.draw(surface)
+        if self.hp < 0:
+            self.isAlive = False
 
 
 class Bullet(pygame.sprite.Sprite):
@@ -91,24 +98,28 @@ class Bullet(pygame.sprite.Sprite):
         self.draw(surface)
 
 
-class FlyEnemy(pygame.sprite.Sprite):
-    def __init__(self, x1, y):
+class PartridgeNormal(pygame.sprite.Sprite):
+    def __init__(self, x1, y, scale, speed):
         pygame.sprite.Sprite.__init__(self)
         self.pos = (x1, y)
         self.image = pygame.image.load('graphics/placeholder_duck.png')
-        self.image = pygame.transform.scale(self.image, (100, 100))
+        self.image = pygame.transform.scale(self.image, (scale, scale))
         self.rect = self.image.get_rect()
         self.rect.center = (x1, y)
-
+        self.speed = speed
+        self.hp = 100
 
     def moveDown(self):
-        self.rect.y += 5
+        self.rect.y += self.speed
 
     def draw(self, surface):
         surface.blit(self.image, (self.rect.x, self.rect.y))
 
     def update(self):
         self.moveDown()
+        if self.hp < 0:
+            self.kill()
+
 
 
 class Explosion2Firework(pygame.sprite.Sprite):
@@ -138,7 +149,7 @@ class Explosion2Firework(pygame.sprite.Sprite):
 
 # Sprite group initialisation
 bullets = pygame.sprite.Group()
-flies = pygame.sprite.Group()
+partridgesNormal = pygame.sprite.Group()
 explosions = pygame.sprite.Group()
 theCat = CAT((600, 700))
 
@@ -159,24 +170,24 @@ while True:
             bullets.add(Bullet(*(theCat.rect.x + 20, theCat.rect.y + 25)))
             bullets.add(Bullet(*(theCat.rect.x + 40, theCat.rect.y + 25)))
         if event.type == createEnemyEvent:
-            flies.add(FlyEnemy(random.randrange(100, 1100), 0))
-            flies.add(FlyEnemy(random.randrange(100, 1100), 0))
+            partridgesNormal.add(PartridgeNormal(random.randrange(100, 1100), 0, 100, 5))
+            partridgesNormal.add(PartridgeNormal(random.randrange(100, 1100), 0, 100, 5))
     # updating player
     theCat.updateSprite(screen)
     # handling enemies and bullets
-    for fly in flies:
-        fly.update()
-        if fly.rect.y > screen.get_height():
-            flies.remove(fly)
+    for partridge in partridgesNormal:
+        partridge.update()
+        if partridge.rect.y > screen.get_height():
+            partridgesNormal.remove(partridge)
     for bullet in bullets:
         bullet.update()
         bullet.draw(screen)
         if not screen.get_rect().collidepoint(bullet.pos):
             bullets.remove(bullet)
-    for fly in flies:
-        flies.draw(screen)
+    for partridge in partridgesNormal:
+        partridgesNormal.draw(screen)
     # hit collisions, score and animations
-    getHits = pygame.sprite.groupcollide(flies, bullets, True, True)
+    getHits = pygame.sprite.groupcollide(partridgesNormal, bullets, True, True)
     for hit in getHits:
         explosion = Explosion2Firework(hit.rect.centerx, hit.rect.centery, 250)
         explosions.add(explosion)
