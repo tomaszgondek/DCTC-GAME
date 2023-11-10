@@ -43,28 +43,29 @@ class CAT(pygame.sprite.Sprite):
         if self.targetHP > self.maxHP:
             self.targetHP = self.maxHP
 
-        def hpBar(self):
-            pygame.draw.rect(screen, (255, 0, 0), (40, screen.get_height() - 65, self.targetHP / self.hpRatio, 25))
-            pygame.draw.rect(screen, (255, 255, 255), (40, screen.get_height() - 65, self.hpBarLen, 25), 4)
+    def hpBar(self):
+        pygame.draw.rect(screen, (255, 0, 0), (40, screen.get_height() - 65, self.targetHP / self.hpRatio, 25))
+        pygame.draw.rect(screen, (255, 255, 255), (40, screen.get_height() - 65, self.hpBarLen, 25), 4)
 
-        # guwno nie dziala
-        def hpBarv2(self):
-            transition_width = 0
-            transition_color = (255, 0, 0)
-            if self.currentHP < self.targetHP:
-                self.currentHP += self.targetHP
-                transition_width = int((self.targetHP - self.currentHP) / self.targetHP)
-                transition_color = (0, 255, 0)
-            if self.currentHP > self.targetHP:
-                self.currentHP -= self.hpChangeSpeed
-                transition_width = int((self.targetHP - self.currentHP) / self.hpRatio)
-                transition_color = (255, 255, 0)
-            health_bar_width = int(self.currentHP / self.hpRatio)
-            health_bar = pygame.Rect(10, 45, health_bar_width, 25)
-            transition_bar = pygame.Rect(health_bar.right, 45, transition_width, 25)
-            pygame.draw.rect(screen, (255, 0, 0), health_bar)
-            pygame.draw.rect(screen, transition_color, transition_bar)
-            pygame.draw.rect(screen, (255, 255, 255), (10, 45, self.hpBarLen, 25), 4)
+
+    # guwno nie dziala
+    def hpBarv2(self):
+        transition_width = 0
+        transition_color = (255, 0, 0)
+        if self.currentHP < self.targetHP:
+            self.currentHP += self.targetHP
+            transition_width = int((self.targetHP - self.currentHP) / self.targetHP)
+            transition_color = (0, 255, 0)
+        if self.currentHP > self.targetHP:
+            self.currentHP -= self.hpChangeSpeed
+            transition_width = int((self.targetHP - self.currentHP) / self.hpRatio)
+            transition_color = (255, 255, 0)
+        health_bar_width = int(self.currentHP / self.hpRatio)
+        health_bar = pygame.Rect(10, 45, health_bar_width, 25)
+        transition_bar = pygame.Rect(health_bar.right, 45, transition_width, 25)
+        pygame.draw.rect(screen, (255, 0, 0), health_bar)
+        pygame.draw.rect(screen, transition_color, transition_bar)
+        pygame.draw.rect(screen, (255, 255, 255), (10, 45, self.hpBarLen, 25), 4)
 
 
     def moveRight(self, pixels):
