@@ -210,7 +210,7 @@ class Explosion2Firework(pygame.sprite.Sprite):
 
 
 # handling game itself
-class Button():
+class Button:
     def __init__(self, image, pos, text_input, font1, base_color, hovering_color):
         self.image = image
         self.x_pos = pos[0]
@@ -241,7 +241,7 @@ class Button():
             self.text = self.font.render(self.text_input, True, self.base_color)
 
 
-class Game():
+class Game:
     def __init__(self):
         self.level = 'menu'
         self.introScene = 1
@@ -257,7 +257,7 @@ class Game():
             self.level01()
 
     def mainMenu(self):
-        menuText = font.render("DON'T CRUSH THE CAT: BACK FOR BLOOD", True, (243, 245, 156))
+        menuText = font.render("DON'T CRASH THE CAT: BACK FOR BLOOD", True, (243, 245, 156))
         menuText = pygame.transform.scale(menuText, (menuText.get_width() / 2, menuText.get_height() / 2))
         isRunning = True
         while isRunning:
@@ -287,7 +287,6 @@ class Game():
                         pygame.quit()
             pygame.display.flip()
             clock.tick(60)
-
 
     def intro(self):
         for event in pygame.event.get():
