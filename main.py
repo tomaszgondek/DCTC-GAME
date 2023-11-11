@@ -54,6 +54,8 @@ text9 = pygame.transform.scale(text9, (text9.get_width()/2, text9.get_height()/2
 # 10th
 # tutaj cały ten, title screen
 
+def getFont(size): # Returns Press-Start-2P in the desired size
+    return pygame.font.Font("font/FFFFORWA.TTF", size)
 
 # Sprites
 class CAT(pygame.sprite.Sprite):
@@ -206,18 +208,86 @@ class Explosion2Firework(pygame.sprite.Sprite):
         if self.index >= len(self.images) - 1 and self.counter >= explosionSpeed:
             self.kill()
 
-class GameStage():
+
+# handling game itself
+class Button():
+    def __init__(self, image, pos, text_input, font1, base_color, hovering_color):
+        self.image = image
+        self.x_pos = pos[0]
+        self.y_pos = pos[1]
+        self.font = font1
+        self.base_color, self.hovering_color = base_color, hovering_color
+        self.text_input = text_input
+        self.text = self.font.render(self.text_input, True, self.base_color)
+        if self.image is None:
+            self.image = self.text
+        self.rect = self.image.get_rect(center=(self.x_pos, self.y_pos))
+        self.text_rect = self.text.get_rect(center=(self.x_pos, self.y_pos))
+
+    def update(self, screen1):
+        if self.image is not None:
+            screen1.blit(self.image, self.rect)
+        screen1.blit(self.text, self.text_rect)
+
+    def checkForInput(self, position):
+        if position[0] in range(self.rect.left, self.rect.right) and position[1] in range(self.rect.top, self.rect.bottom):
+            return True
+        return False
+
+    def changeColor(self, position):
+        if position[0] in range(self.rect.left, self.rect.right) and position[1] in range(self.rect.top, self.rect.bottom):
+            self.text = self.font.render(self.text_input, True, self.hovering_color)
+        else:
+            self.text = self.font.render(self.text_input, True, self.base_color)
+
+
+class Game():
     def __init__(self):
-        self.level = 'intro'
+        self.level = 'menu'
         self.introScene = 1
         self.levelIntroDone = False
         self.level01Done = False
 
     def stageManager(self):
+        if self.level == "menu":
+            self.mainMenu()
         if self.level == 'intro':
             self.intro()
         if self.level == 'level01':
             self.level01()
+
+    def mainMenu(self):
+        menuText = font.render("DON'T CRUSH THE CAT: BACK FOR BLOOD", True, (243, 245, 156))
+        menuText = pygame.transform.scale(menuText, (menuText.get_width() / 2, menuText.get_height() / 2))
+        isRunning = True
+        while isRunning:
+            screen.fill((75, 4, 94))
+            menuMousePos = pygame.mouse.get_pos()
+            menuRect = menuText.get_rect(center=(screen.get_width()/2, 300))
+            playButton = Button(image=(pygame.image.load('graphics/PLAYBUTTON.jpg')),
+                                pos=(screen.get_width()/2, 350), text_input="PLAY",
+                                font1=getFont(75), base_color=(50, 50, 50), hovering_color=(192, 152, 60))
+            quitButton = Button(image=(pygame.image.load('graphics/PLAYBUTTON.jpg')),
+                                pos=(screen.get_width() / 2, 600), text_input="QUIT",
+                                font1=getFont(75), base_color=(50, 50, 50), hovering_color=(192, 152, 60))
+
+            screen.blit(menuText, (screen.get_width()/2 - menuText.get_width()/2, 150))
+            for button in [playButton, quitButton]:
+                button.changeColor(menuMousePos)
+                button.update(screen)
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    exit()
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if playButton.checkForInput(menuMousePos):
+                        self.level = 'intro'
+                        isRunning = False
+                    if quitButton.checkForInput(menuMousePos):
+                        pygame.quit()
+            pygame.display.flip()
+            clock.tick(60)
+
 
     def intro(self):
         for event in pygame.event.get():
@@ -308,7 +378,7 @@ bullets = pygame.sprite.Group()
 partridgesNormal = pygame.sprite.Group()
 explosions = pygame.sprite.Group()
 theCat = CAT((600, 700))
-gameStage = GameStage()
+game = Game()
 
 # Custom events
 createEnemyEvent, t = pygame.USEREVENT+1, 1000
@@ -316,5 +386,5 @@ pygame.time.set_timer(createEnemyEvent, t)
 
 # main loop
 while True:
-    gameStage.stageManager()
+    game.stageManager()
 
