@@ -24,27 +24,27 @@ text2 = font.render('There was a cat planet, in a galaxy far away...', True, (25
 background2 = pygame.image.load('graphics/PLACEHOLDER1.jpg')
 text2 = pygame.transform.scale(text2, (text2.get_width()/2, text2.get_height()/2))
 # 3rd
-text3 = font.render('all cats lived lazy and care-free lives', True, (255, 255, 255))
+text3 = font.render('...where all cats lived lazy and care-free lives.', True, (255, 255, 255))
 background3 = pygame.image.load('graphics/PLACEHOLDER1.jpg')
 text3 = pygame.transform.scale(text3, (text3.get_width()/2, text3.get_height()/2))
 # 4th
-text4 = font.render('And suddenly, everything has changed', True, (255, 255, 255))
+text4 = font.render('And suddenly, everything has changed.', True, (255, 255, 255))
 background4 = pygame.image.load('graphics/PLACEHOLDER1.jpg')
 text4 = pygame.transform.scale(text4, (text4.get_width()/2, text4.get_height()/2))
 # 5th
-text5 = font.render('Unknown threat, from the stars', True, (255, 255, 255))
+text5 = font.render('Unknown threat, from the stars.', True, (255, 255, 255))
 background5 = pygame.image.load('graphics/PLACEHOLDER1.jpg')
 text5 = pygame.transform.scale(text5, (text5.get_width()/2, text5.get_height()/2))
 # 6th
-text6 = font.render('A war has begun, that claimed many lives', True, (255, 255, 255))
+text6 = font.render('A war has begun, that claimed many lives.', True, (255, 255, 255))
 background6 = pygame.image.load('graphics/PLACEHOLDER1.jpg')
 text6 = pygame.transform.scale(text6, (text6.get_width()/2, text6.get_height()/2))
 # 7th
-text7 = font.render('But when everything seemed to be lost', True, (255, 255, 255))
+text7 = font.render('But when everything seemed to be lost...', True, (255, 255, 255))
 background7 = pygame.image.load('graphics/PLACEHOLDER1.jpg')
 text7 = pygame.transform.scale(text7, (text7.get_width()/2, text7.get_height()/2))
 # 8th
-text8 = font.render('An ancient cat, a pallas cat with unimaginable powers...', True, (255, 255, 255))
+text8 = font.render('...an ancient cat, a pallas cat with unimaginable powers...', True, (255, 255, 255))
 background8 = pygame.image.load('graphics/PLACEHOLDER1.jpg')
 text8 = pygame.transform.scale(text8, (text8.get_width()/2, text8.get_height()/2))
 # 9th
