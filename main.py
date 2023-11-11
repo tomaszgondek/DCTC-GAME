@@ -169,17 +169,23 @@ class PartridgeNormal(pygame.sprite.Sprite):
         self.image = pygame.transform.scale(self.image, (scale, scale))
         self.rect = self.image.get_rect()
         self.rect.center = (x1, y)
-        self.speed = speed
+        self.x_speed = speed * random.random()
+        self.y_speed = speed
         self.hp = 100
 
     def moveDown(self):
         self.rect.y += self.speed
 
+    def goCrazy(self):
+        self.rect.x += self.x_speed
+        self.rect.y += self.y_speed
+
     def draw(self, surface):
         surface.blit(self.image, (self.rect.x, self.rect.y))
 
     def update(self):
-        self.moveDown()
+        # self.moveDown()
+        self.goCrazy()
         if self.hp < 0:
             self.kill()
 
