@@ -247,6 +247,8 @@ class GameStage():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
                     self.introScene += 1
+                if event.key == pygame.K_p and self.introScene > 1:
+                    self.introScene -= 1
         if self.introScene == 1:
             screen.blit(background1, (0, 0))
             screen.blit(text1, (screen.get_width()/2 - text1.get_width()/2, 700))
