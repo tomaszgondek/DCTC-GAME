@@ -7,11 +7,19 @@ screen = pygame.display.set_mode((1200, 800))
 font = pygame.font.Font('font/FFFFORWA.TTF', 50)
 clock = pygame.time.Clock()
 pygame.display.set_caption("Don't Crash the cat: Back for Blood")
-score = 0
-scoreImg = font.render(str(score), True, (0, 0, 0))
 
 # static graphics load
 skyblock = pygame.image.load('graphics/placeholder_background.jpg').convert()
+
+# story
+# 1st
+text1 = font.render('So you want to hear a story, eh?', True, (255, 255, 255))
+background1 = pygame.image.load('graphics/PLACEHOLDER1.jpg')
+text1 = pygame.transform.scale(text1, (text1.get_width()/2, text1.get_height()/2))
+# 2nd
+text2 = font.render('Once upon the time etc nie wiem elo', True, (255, 255, 255))
+background2 = pygame.image.load('graphics/PLACEHOLDER1.jpg')
+text2 = pygame.transform.scale(text2, (text2.get_width()/2, text2.get_height()/2))
 
 
 # Sprites
@@ -109,7 +117,6 @@ class CAT(pygame.sprite.Sprite):
         self.draw(surface)
 
 
-
 class Bullet(pygame.sprite.Sprite):
     def __init__(self, x, y):
         pygame.sprite.Sprite.__init__(self)
@@ -164,7 +171,6 @@ class PartridgeNormal(pygame.sprite.Sprite):
             self.kill()
 
 
-
 class Explosion2Firework(pygame.sprite.Sprite):
     def __init__(self, x, y, scale):
         pygame.sprite.Sprite.__init__(self)
@@ -189,12 +195,82 @@ class Explosion2Firework(pygame.sprite.Sprite):
         if self.index >= len(self.images) - 1 and self.counter >= explosionSpeed:
             self.kill()
 
+class GameStage():
+    def __init__(self):
+        self.level = 'intro'
+        self.introScene = 1
+
+    def stageManager(self):
+        if self.level == 'intro':
+            self.intro()
+        if self.level == 'level01':
+            self.level01()
+
+    def intro(self):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    self.introScene += 1
+        if self.introScene == 1:
+            screen.blit(background1, (0, 0))
+            screen.blit(text1, (screen.get_width()/2 - text1.get_width()/2, 700))
+        if self.introScene == 2:
+            screen.blit(background2, (0, 0))
+            screen.blit(text2, (screen.get_width()/2 - text2.get_width()/2, 700))
+        if self.introScene == 3:
+            self.level = 'level01'
+        pygame.display.flip()
+        clock.tick(60)
+
+    def level01(self):
+        screen.blit(skyblock, (0, 0))
+        # handling user input
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                bullets.add(Bullet(*(theCat.rect.x + 20, theCat.rect.y + 25)))
+                bullets.add(Bullet(*(theCat.rect.x + 40, theCat.rect.y + 25)))
+                theCat.getHealth(10)
+            if event.type == createEnemyEvent:
+                partridgesNormal.add(PartridgeNormal(random.randrange(100, 1100), 0, 100, 5))
+                partridgesNormal.add(PartridgeNormal(random.randrange(100, 1100), 0, 100, 5))
+        # updating player
+        theCat.updateSprite(screen)
+        # handling enemies and bullets
+        for partridge in partridgesNormal:
+            partridge.update()
+            if partridge.rect.y > screen.get_height():
+                partridgesNormal.remove(partridge)
+                theCat.getDamage(10)
+        for bullet in bullets:
+            bullet.update()
+            bullet.draw(screen)
+            if not screen.get_rect().collidepoint(bullet.pos):
+                bullets.remove(bullet)
+        for partridge in partridgesNormal:
+            partridgesNormal.draw(screen)
+        # hit collisions, score and animations
+        getHits = pygame.sprite.groupcollide(partridgesNormal, bullets, True, True)
+        for hit in getHits:
+            explosion = Explosion2Firework(hit.rect.centerx, hit.rect.centery, 250)
+            explosions.add(explosion)
+        explosions.draw(screen)
+        explosions.update()
+        pygame.display.flip()
+        clock.tick(60)
+
 
 # Sprite group initialisation
 bullets = pygame.sprite.Group()
 partridgesNormal = pygame.sprite.Group()
 explosions = pygame.sprite.Group()
 theCat = CAT((600, 700))
+gameStage = GameStage()
 
 # Custom events
 createEnemyEvent, t = pygame.USEREVENT+1, 1000
@@ -202,46 +278,5 @@ pygame.time.set_timer(createEnemyEvent, t)
 
 # main loop
 while True:
-    # skyblock
-    screen.blit(skyblock, (0, 0))
-    # handling user input
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            pygame.quit()
-            exit()
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            bullets.add(Bullet(*(theCat.rect.x + 20, theCat.rect.y + 25)))
-            bullets.add(Bullet(*(theCat.rect.x + 40, theCat.rect.y + 25)))
-            theCat.getHealth(10)
-        if event.type == createEnemyEvent:
-            partridgesNormal.add(PartridgeNormal(random.randrange(100, 1100), 0, 100, 5))
-            partridgesNormal.add(PartridgeNormal(random.randrange(100, 1100), 0, 100, 5))
-    # updating player
-    theCat.updateSprite(screen)
-    # handling enemies and bullets
-    for partridge in partridgesNormal:
-        partridge.update()
-        if partridge.rect.y > screen.get_height():
-            partridgesNormal.remove(partridge)
-            theCat.getDamage(10)
-    for bullet in bullets:
-        bullet.update()
-        bullet.draw(screen)
-        if not screen.get_rect().collidepoint(bullet.pos):
-            bullets.remove(bullet)
-    for partridge in partridgesNormal:
-        partridgesNormal.draw(screen)
-    # hit collisions, score and animations
-    getHits = pygame.sprite.groupcollide(partridgesNormal, bullets, True, True)
-    for hit in getHits:
-        explosion = Explosion2Firework(hit.rect.centerx, hit.rect.centery, 250)
-        explosions.add(explosion)
-        score += 1
-        scorestr = score
-        scoreImg = font.render(str(scorestr), True, (0, 0, 0))
-    explosions.draw(screen)
-    explosions.update()
-    screen.blit(scoreImg, (10, 10))
-    # updating frame
-    pygame.display.flip()
-    clock.tick(60)
+    gameStage.stageManager()
+
