@@ -285,6 +285,7 @@ class Game:
                         isRunning = False
                     if quitButton.checkForInput(menuMousePos):
                         pygame.quit()
+                        exit()
             pygame.display.flip()
             clock.tick(60)
 
