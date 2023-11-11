@@ -184,6 +184,8 @@ class PartridgeNormal(pygame.sprite.Sprite):
         surface.blit(self.image, (self.rect.x, self.rect.y))
 
     def update(self):
+        if self.rect.y > screen.get_height():
+            self.kill()
         # self.moveDown()
         self.goCrazy()
         if self.hp < 0:
@@ -358,18 +360,18 @@ class Game:
         # handling enemies and bullets
         for partridge in partridgesNormal:
             partridge.update()
-            if partridge.rect.y > screen.get_height():
-                partridgesNormal.remove(partridge)
-                theCat.getDamage(10)
+
         for bullet in bullets:
             bullet.update()
             bullet.draw(screen)
             if not screen.get_rect().collidepoint(bullet.pos):
                 bullets.remove(bullet)
+
         for partridge in partridgesNormal:
             partridgesNormal.draw(screen)
         # hit collisions, score and animations
         getHits = pygame.sprite.groupcollide(partridgesNormal, bullets, True, True)
+
         for hit in getHits:
             explosion = Explosion2Firework(hit.rect.centerx, hit.rect.centery, 250)
             explosions.add(explosion)
