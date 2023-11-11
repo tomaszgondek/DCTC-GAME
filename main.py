@@ -12,14 +12,47 @@ pygame.display.set_caption("Don't Crash the cat: Back for Blood")
 skyblock = pygame.image.load('graphics/placeholder_background.jpg').convert()
 
 # story
+# intro
 # 1st
 text1 = font.render('So you want to hear a story, eh?', True, (255, 255, 255))
+text11 = font.render('press SPACE to continue', True, (255, 255, 255))
 background1 = pygame.image.load('graphics/PLACEHOLDER1.jpg')
 text1 = pygame.transform.scale(text1, (text1.get_width()/2, text1.get_height()/2))
+text11 = pygame.transform.scale(text11, (text11.get_width()/4, text11.get_height()/4))
 # 2nd
-text2 = font.render('Once upon the time etc nie wiem elo', True, (255, 255, 255))
+text2 = font.render('There was a cat planet, in a galaxy far away...', True, (255, 255, 255))
 background2 = pygame.image.load('graphics/PLACEHOLDER1.jpg')
 text2 = pygame.transform.scale(text2, (text2.get_width()/2, text2.get_height()/2))
+# 3rd
+text3 = font.render('all cats lived lazy and care-free lives', True, (255, 255, 255))
+background3 = pygame.image.load('graphics/PLACEHOLDER1.jpg')
+text3 = pygame.transform.scale(text3, (text3.get_width()/2, text3.get_height()/2))
+# 4th
+text4 = font.render('And suddenly, everything has changed', True, (255, 255, 255))
+background4 = pygame.image.load('graphics/PLACEHOLDER1.jpg')
+text4 = pygame.transform.scale(text4, (text4.get_width()/2, text4.get_height()/2))
+# 5th
+text5 = font.render('Unknown threat, from the stars', True, (255, 255, 255))
+background5 = pygame.image.load('graphics/PLACEHOLDER1.jpg')
+text5 = pygame.transform.scale(text5, (text5.get_width()/2, text5.get_height()/2))
+# 6th
+text6 = font.render('A war has begun, that claimed many lives', True, (255, 255, 255))
+background6 = pygame.image.load('graphics/PLACEHOLDER1.jpg')
+text6 = pygame.transform.scale(text6, (text6.get_width()/2, text6.get_height()/2))
+# 7th
+text7 = font.render('But when everything seemed to be lost', True, (255, 255, 255))
+background7 = pygame.image.load('graphics/PLACEHOLDER1.jpg')
+text7 = pygame.transform.scale(text7, (text7.get_width()/2, text7.get_height()/2))
+# 8th
+text8 = font.render('An ancient cat, a pallas cat with unimaginable powers...', True, (255, 255, 255))
+background8 = pygame.image.load('graphics/PLACEHOLDER1.jpg')
+text8 = pygame.transform.scale(text8, (text8.get_width()/2, text8.get_height()/2))
+# 9th
+text9 = font.render('...came to rescue, with one goal - to kill the invaders', True, (255, 255, 255))
+background9 = pygame.image.load('graphics/PLACEHOLDER1.jpg')
+text9 = pygame.transform.scale(text9, (text9.get_width()/2, text9.get_height()/2))
+# 10th
+# tutaj cały ten, title screen
 
 
 # Sprites
@@ -217,10 +250,32 @@ class GameStage():
         if self.introScene == 1:
             screen.blit(background1, (0, 0))
             screen.blit(text1, (screen.get_width()/2 - text1.get_width()/2, 700))
+            screen.blit(text11, (screen.get_width()/2 - text11.get_width()/2, 750))
         if self.introScene == 2:
             screen.blit(background2, (0, 0))
             screen.blit(text2, (screen.get_width()/2 - text2.get_width()/2, 700))
         if self.introScene == 3:
+            screen.blit(background3, (0, 0))
+            screen.blit(text3, (screen.get_width() / 2 - text3.get_width() / 2, 700))
+        if self.introScene == 4:
+            screen.blit(background4, (0, 0))
+            screen.blit(text4, (screen.get_width() / 2 - text4.get_width() / 2, 700))
+        if self.introScene == 5:
+            screen.blit(background5, (0, 0))
+            screen.blit(text5, (screen.get_width() / 2 - text5.get_width() / 2, 700))
+        if self.introScene == 6:
+            screen.blit(background6, (0, 0))
+            screen.blit(text6, (screen.get_width() / 2 - text6.get_width() / 2, 700))
+        if self.introScene == 7:
+            screen.blit(background7, (0, 0))
+            screen.blit(text7, (screen.get_width() / 2 - text7.get_width() / 2, 700))
+        if self.introScene == 8:
+            screen.blit(background8, (0, 0))
+            screen.blit(text8, (screen.get_width() / 2 - text8.get_width() / 2, 700))
+        if self.introScene == 9:
+            screen.blit(background9, (0, 0))
+            screen.blit(text9, (screen.get_width() / 2 - text9.get_width() / 2, 700))
+        if self.introScene == 10:
             self.level = 'level01'
         pygame.display.flip()
         clock.tick(60)
