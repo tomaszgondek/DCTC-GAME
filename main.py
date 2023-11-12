@@ -8,6 +8,14 @@ font = pygame.font.Font('font/FFFFORWA.TTF', 50)
 clock = pygame.time.Clock()
 pygame.display.set_caption("Don't Crash the cat: Back for Blood")
 ctr = 0
+saveState = []
+with open('save/levels.txt') as f:
+    while True:
+        levelSave = f.readline()
+        saveState.append(levelSave.strip())
+        if not levelSave:
+            break
+
 # static graphics load
 skyblock = pygame.image.load('graphics/placeholder_background.jpg').convert()
 playbuttonWide = pygame.image.load('graphics/PLAYBUTTON.jpg')
@@ -310,8 +318,8 @@ class Game:
     def __init__(self):
         self.level = 'menu'
         self.introScene = 1
-        self.levelIntroDone = False
-        self.level01Done = False
+        self.levelIntroDone = int(saveState[0])
+        self.level01Done = int(saveState[1])
         self.currentLevel = self.level
 
     def stageManager(self):
@@ -481,6 +489,10 @@ class Game:
             screen.blit(text9, (screen.get_width() / 2 - text9.get_width() / 2, 700))
         if self.introScene == 10:
             self.levelIntroDone = True
+            saveState[0] = 1
+            f = open('save/levels.txt', 'w')
+            f.writelines(['1\n', '0\n', '0\n', '0\n', '0\n'])
+            f.close()
             self.level = 'levelSelector'
         pygame.display.flip()
         clock.tick(60)
