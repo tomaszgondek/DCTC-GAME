@@ -7,7 +7,7 @@ screen = pygame.display.set_mode((1200, 800))
 font = pygame.font.Font('font/FFFFORWA.TTF', 50)
 clock = pygame.time.Clock()
 pygame.display.set_caption("Don't Crash the cat: Back for Blood")
-
+ctr = 0
 # static graphics load
 skyblock = pygame.image.load('graphics/placeholder_background.jpg').convert()
 
@@ -177,11 +177,15 @@ class PartridgeNormal(pygame.sprite.Sprite):
         self.hp = 100
         self.image = pygame.transform.rotate(self.image, -1 * math.degrees(self.angle) - 90)
         self.image = pygame.transform.flip(self.image, 1, 0)
+        self.damageVis = 0
 
     def checkColisions(self):
-        if pygame.sprite.spritecollide(self, bullets, 0):
-            self.hp -= 75
-            print('pyk')
+        hits = []
+        hits = pygame.sprite.spritecollide(self, bullets, 1)
+        for hit in hits:
+            self.hp -= 25
+            print('hit')
+
 
     def getAngle(self, origin, destination):
         x_dist = destination[0] - origin[0]
@@ -212,7 +216,7 @@ class PartridgeNormal(pygame.sprite.Sprite):
             self.kill()
         # self.moveDown()
         self.goCrazyv2()
-        if self.hp < 0:
+        if self.hp <= 0:
             explosion = Explosion2Firework(self.rect.centerx, self.rect.centery, 250)
             explosions.add(explosion)
             self.kill()
