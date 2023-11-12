@@ -74,7 +74,7 @@ class CAT(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(midbottom=(64, 64))
         self.rect.center = pos
         self.playerSpeed = 5
-        self.bulletType = 1
+        self.bulletType = 'shotgun'
         self.currentHP = 1000
         self.maxHP = 1000
         self.hpBarLen = 200
@@ -97,6 +97,21 @@ class CAT(pygame.sprite.Sprite):
     def hpBar(self):
         pygame.draw.rect(screen, (255, 0, 0), (40, screen.get_height() - 65, self.currentHP / self.hpRatio, 25))
         pygame.draw.rect(screen, (255, 255, 255), (40, screen.get_height() - 65, self.hpBarLen, 25), 4)
+
+    def shoot(self, bulletType):
+        if bulletType == 'laser':
+            bullets.add(laserBullet(*(self.rect.x + 20, self.rect.y + 25)))
+            bullets.add(laserBullet(*(self.rect.x + 40, self.rect.y + 25)))
+        if bulletType == 'plasma':
+            bullets.add(plasmaBullet(*(self.rect.center)))
+        if bulletType == 'shotgun':
+            shotgunB1 = shotgutBullet(*(self.rect.center), 0)
+            shotgunB2 = shotgutBullet(*(self.rect.center), 45)
+            shotgunB3 = shotgutBullet(*(self.rect.center), -45)
+            bullets.add(shotgunB1)
+            bullets.add(shotgunB2)
+            bullets.add(shotgunB3)
+
 
     def moveRight(self, pixels):
         self.rect.x += pixels
@@ -139,9 +154,10 @@ class CAT(pygame.sprite.Sprite):
         self.draw(surface)
 
 
-class Bullet(pygame.sprite.Sprite):
+class laserBullet(pygame.sprite.Sprite):
     def __init__(self, x, y):
         pygame.sprite.Sprite.__init__(self)
+        self.carryDMG = 25
         self.pos = (x, y)
         mx, my = pygame.mouse.get_pos()
         self.dir = (mx - x, my - y)
@@ -151,8 +167,8 @@ class Bullet(pygame.sprite.Sprite):
         else:
             self.dir = (self.dir[0]/length, self.dir[1]/length)
         angle = math.degrees(math.atan2(-self.dir[1], self.dir[0]))
-        self.bullet = pygame.Surface((30, 2)).convert_alpha()
-        self.bullet.fill((180, 45, 45))
+        self.bullet = pygame.image.load('graphics/bullets/Laser_Sprites/14.png')
+        self.bullet = pygame.transform.scale(self.bullet, (32, 32))
         self.bullet = pygame.transform.rotate(self.bullet, angle)
         self.speed = 20
         self.rect = self.bullet.get_rect()
@@ -169,6 +185,68 @@ class Bullet(pygame.sprite.Sprite):
         if self.pos[0] > screen.get_width() or self.pos[0] < 0 or self.pos[1] > screen.get_height() or self.pos[1] < 0:
             self.kill()
 
+class plasmaBullet(pygame.sprite.Sprite):
+    def __init__(self, x, y):
+        pygame.sprite.Sprite.__init__(self)
+        self.carryDMG = 65
+        self.pos = (x, y)
+        mx, my = pygame.mouse.get_pos()
+        self.dir = (mx - x, my - y)
+        length = math.hypot(*self.dir)
+        if length == 0.0:
+            self.dir = (0, -1)
+        else:
+            self.dir = (self.dir[0]/length, self.dir[1]/length)
+        angle = math.degrees(math.atan2(-self.dir[1], self.dir[0]))
+        self.bullet = pygame.image.load('graphics/bullets/Laser_Sprites/59.png')
+        self.bullet = pygame.transform.scale(self.bullet, (100, 150))
+        self.bullet = pygame.transform.rotate(self.bullet, angle)
+        self.speed = 30
+        self.rect = self.bullet.get_rect()
+
+    def draw(self, surf):
+        self.rect = self.bullet.get_rect(center=self.pos)
+        surf.blit(self.bullet, self.rect)
+
+    def update(self):
+        self.pos = (self.pos[0] + self.dir[0] * self.speed,
+                    self.pos[1] + self.dir[1] * self.speed)
+        self.rect.move_ip(0,5)
+        self.draw(screen)
+        if self.pos[0] > screen.get_width() or self.pos[0] < 0 or self.pos[1] > screen.get_height() or self.pos[1] < 0:
+            self.kill()
+
+class shotgutBullet(pygame.sprite.Sprite):
+    def __init__(self, x, y, offset):
+        pygame.sprite.Sprite.__init__(self)
+        self.carryDMG = 30
+        self.pos = (x, y)
+        mx, my = pygame.mouse.get_pos()
+        mx += offset
+        self.dir = (mx - x, my - y)
+        length = math.hypot(*self.dir)
+        if length == 0.0:
+            self.dir = (0, -1)
+        else:
+            self.dir = (self.dir[0]/length, self.dir[1]/length)
+        angle = math.degrees(math.atan2(-self.dir[1], self.dir[0]))
+        self.bullet = pygame.image.load('graphics/bullets/Laser_Sprites/07.png')
+        self.bullet = pygame.transform.scale(self.bullet, (50, 50))
+        self.bullet = pygame.transform.rotate(self.bullet, angle)
+        self.speed = 30
+        self.rect = self.bullet.get_rect()
+
+    def draw(self, surf):
+        self.rect = self.bullet.get_rect(center=self.pos)
+        surf.blit(self.bullet, self.rect)
+
+    def update(self):
+        self.pos = (self.pos[0] + self.dir[0] * self.speed,
+                    self.pos[1] + self.dir[1] * self.speed)
+        self.rect.move_ip(0,5)
+        self.draw(screen)
+        if self.pos[0] > screen.get_width() or self.pos[0] < 0 or self.pos[1] > screen.get_height() or self.pos[1] < 0:
+            self.kill()
 
 class PartridgeNormal(pygame.sprite.Sprite):
     def __init__(self, x, y, tx, ty, scale, speed):
@@ -192,8 +270,8 @@ class PartridgeNormal(pygame.sprite.Sprite):
         hits = []
         hits = pygame.sprite.spritecollide(self, bullets, 1)
         for hit in hits:
-            self.hp -= 25
-            dmgP = damagePanel(self.rect.x, self.rect.y, 25, 20, (255, 0, 125))
+            self.hp -= hit.carryDMG
+            dmgP = damagePanel(self.rect.x, self.rect.y, hit.carryDMG, 20, (255, 0, 125))
             damages.add(dmgP)
 
     def getAngle(self, origin, destination):
@@ -504,9 +582,7 @@ class Game:
                 pygame.quit()
                 exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
-                bullets.add(Bullet(*(theCat.rect.x + 20, theCat.rect.y + 25)))
-                bullets.add(Bullet(*(theCat.rect.x + 40, theCat.rect.y + 25)))
-                theCat.getHealth(10)
+                theCat.shoot(theCat.bulletType)
             if event.type == createEnemyEvent:
                 partridgesNormal.add(PartridgeNormal(random.randrange(100, 1100), -100, random.randrange(100, 1100), 1000, 100, 5))
                 partridgesNormal.add(PartridgeNormal(random.randrange(100, 1100), -100, random.randrange(100, 1100), 1000, 100, 5))
