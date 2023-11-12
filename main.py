@@ -148,17 +148,18 @@ class Bullet(pygame.sprite.Sprite):
         self.speed = 20
         self.rect = self.bullet.get_rect()
 
-    def update(self):
-        self.pos = (self.pos[0]+self.dir[0]*self.speed,
-                    self.pos[1]+self.dir[1]*self.speed)
-
     def draw(self, surf):
         self.rect = self.bullet.get_rect(center=self.pos)
         surf.blit(self.bullet, self.rect)
 
-    def updateSprite(self, surface):
+    def update(self):
+        self.pos = (self.pos[0] + self.dir[0] * self.speed,
+                    self.pos[1] + self.dir[1] * self.speed)
         self.rect.move_ip(0,5)
-        self.draw(surface)
+        self.draw(screen)
+        if self.pos[0] > screen.get_width() or self.pos[0] < 0 or self.pos[1] > screen.get_height() or self.pos[1] < 0:
+            print("aua")
+            self.kill()
 
 
 class PartridgeNormal(pygame.sprite.Sprite):
@@ -387,26 +388,11 @@ class Game:
                 partridgesNormal.add(PartridgeNormal(random.randrange(100, 1100), -100, random.randrange(100, 1100), 1000, 100, 5))
         # updating player
         theCat.updateSprite(screen)
-        # handling enemies and bullets
-        for partridge in partridgesNormal:
-            partridge.update()
-
-        for bullet in bullets:
-            bullet.update()
-            bullet.draw(screen)
-            if not screen.get_rect().collidepoint(bullet.pos):
-                bullets.remove(bullet)
-
-        for partridge in partridgesNormal:
-            partridgesNormal.draw(screen)
-        # hit collisions, score and animations
-        # getHits = pygame.sprite.groupcollide(partridgesNormal, bullets, True, True)
-        getHits = []
-        for hit in getHits:
-            explosion = Explosion2Firework(hit.rect.centerx, hit.rect.centery, 250)
-            explosions.add(explosion)
-        explosions.draw(screen)
+        partridgesNormal.update()
+        partridgesNormal.draw(screen)
+        bullets.update()
         explosions.update()
+        explosions.draw(screen)
         pygame.display.flip()
         clock.tick(60)
 
