@@ -311,6 +311,7 @@ class Game:
         self.introScene = 1
         self.levelIntroDone = False
         self.level01Done = False
+        self.currentLevel = self.level
 
     def stageManager(self):
         if self.level == "menu":
@@ -319,6 +320,8 @@ class Game:
             self.intro()
         if self.level == 'level01':
             self.level01()
+        if self.level == 'pause':
+            self.pause()
 
     def mainMenu(self):
         menuText = font.render("DON'T CRASH THE CAT: BACK FOR BLOOD", True, (243, 245, 156))
@@ -346,6 +349,39 @@ class Game:
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if playButton.checkForInput(menuMousePos):
                         self.level = 'intro'
+                        isRunning = False
+                    if quitButton.checkForInput(menuMousePos):
+                        pygame.quit()
+                        exit()
+            pygame.display.flip()
+            clock.tick(60)
+
+    def pause(self):
+        menuText = font.render("GAME PAUSED", True, (243, 245, 156))
+        menuText = pygame.transform.scale(menuText, (menuText.get_width() / 2, menuText.get_height() / 2))
+        isRunning = True
+        while isRunning:
+            screen.fill((75, 4, 94))
+            menuMousePos = pygame.mouse.get_pos()
+            menuRect = menuText.get_rect(center=(screen.get_width()/2, 300))
+            playButton = Button(image=(pygame.image.load('graphics/PLAYBUTTON.jpg')),
+                                pos=(screen.get_width()/2, 350), text_input="BACK",
+                                font1=getFont(75), base_color=(50, 50, 50), hovering_color=(192, 152, 60))
+            quitButton = Button(image=(pygame.image.load('graphics/PLAYBUTTON.jpg')),
+                                pos=(screen.get_width() / 2, 600), text_input="QUIT",
+                                font1=getFont(75), base_color=(50, 50, 50), hovering_color=(192, 152, 60))
+
+            screen.blit(menuText, (screen.get_width()/2 - menuText.get_width()/2, 150))
+            for button in [playButton, quitButton]:
+                button.changeColor(menuMousePos)
+                button.update(screen)
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    exit()
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if playButton.checkForInput(menuMousePos):
+                        self.level = self.currentLevel
                         isRunning = False
                     if quitButton.checkForInput(menuMousePos):
                         pygame.quit()
@@ -398,6 +434,7 @@ class Game:
         clock.tick(60)
 
     def level01(self):
+        self.currentLevel = 'level01'
         screen.blit(skyblock, (0, 0))
         # handling user input
         for event in pygame.event.get():
@@ -411,6 +448,9 @@ class Game:
             if event.type == createEnemyEvent:
                 partridgesNormal.add(PartridgeNormal(random.randrange(100, 1100), -100, random.randrange(100, 1100), 1000, 100, 5))
                 partridgesNormal.add(PartridgeNormal(random.randrange(100, 1100), -100, random.randrange(100, 1100), 1000, 100, 5))
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    self.level = 'pause'
         theCat.updateSprite(screen)
         partridgesNormal.update()
         bullets.update()
