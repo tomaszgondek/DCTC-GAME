@@ -167,7 +167,6 @@ class Bullet(pygame.sprite.Sprite):
         self.rect.move_ip(0,5)
         self.draw(screen)
         if self.pos[0] > screen.get_width() or self.pos[0] < 0 or self.pos[1] > screen.get_height() or self.pos[1] < 0:
-            print("aua")
             self.kill()
 
 
@@ -196,7 +195,6 @@ class PartridgeNormal(pygame.sprite.Sprite):
             self.hp -= 25
             dmgP = damagePanel(self.rect.x, self.rect.y, 25, 20, (255, 0, 125))
             damages.add(dmgP)
-            print('hit')
 
     def getAngle(self, origin, destination):
         x_dist = destination[0] - origin[0]
