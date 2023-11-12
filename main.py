@@ -162,16 +162,34 @@ class Bullet(pygame.sprite.Sprite):
 
 
 class PartridgeNormal(pygame.sprite.Sprite):
-    def __init__(self, x1, y, scale, speed):
+    def __init__(self, x, y, tx, ty, scale, speed):
         pygame.sprite.Sprite.__init__(self)
-        self.pos = (x1, y)
+        self.pos = (x, y)
+        self.target = (tx, ty)
+        self.angle = self.getAngle(self.pos, self.target)
         self.image = pygame.image.load('graphics/placeholder_duck.png')
         self.image = pygame.transform.scale(self.image, (scale, scale))
         self.rect = self.image.get_rect()
-        self.rect.center = (x1, y)
-        self.x_speed = speed * random.random()
-        self.y_speed = speed
+        self.rect.center = (x, y)
+        # self.x_speed = speed * random.random()
+        # self.y_speed = speed
+        self.speed = speed
         self.hp = 100
+        self.image = pygame.transform.rotate(self.image, -1 * math.degrees(self.angle) - 90)
+        self.image = pygame.transform.flip(self.image, 1, 0)
+
+    def getAngle(self, origin, destination):
+        x_dist = destination[0] - origin[0]
+        y_dist = destination[1] - origin[1]
+        return math.atan2(-y_dist, x_dist) % (2 * math.pi)
+
+    def project(self, pos, angle, distance):
+        return (pos[0] + (math.cos(angle) * distance),
+                pos[1] - (math.sin(angle) * distance))
+
+    def goCrazyv2(self):
+        self.pos = self.project(self.pos, self.angle, self.speed)
+        self.rect.center = self.pos
 
     def moveDown(self):
         self.rect.y += self.speed
@@ -187,7 +205,7 @@ class PartridgeNormal(pygame.sprite.Sprite):
         if self.rect.y > screen.get_height():
             self.kill()
         # self.moveDown()
-        self.goCrazy()
+        self.goCrazyv2()
         if self.hp < 0:
             self.kill()
 
@@ -353,8 +371,8 @@ class Game:
                 bullets.add(Bullet(*(theCat.rect.x + 40, theCat.rect.y + 25)))
                 theCat.getHealth(10)
             if event.type == createEnemyEvent:
-                partridgesNormal.add(PartridgeNormal(random.randrange(100, 1100), 0, 100, 5))
-                partridgesNormal.add(PartridgeNormal(random.randrange(100, 1100), 0, 100, 5))
+                partridgesNormal.add(PartridgeNormal(random.randrange(100, 1100), -100, random.randrange(100, 1100), 1000, 100, 5))
+                partridgesNormal.add(PartridgeNormal(random.randrange(100, 1100), -100, random.randrange(100, 1100), 1000, 100, 5))
         # updating player
         theCat.updateSprite(screen)
         # handling enemies and bullets
