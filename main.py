@@ -524,7 +524,6 @@ game = Game()
 createEnemyEvent, t = pygame.USEREVENT+1, 1000
 pygame.time.set_timer(createEnemyEvent, t)
 
-
 # main loop
 while True:
     game.stageManager()
