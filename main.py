@@ -178,6 +178,11 @@ class PartridgeNormal(pygame.sprite.Sprite):
         self.image = pygame.transform.rotate(self.image, -1 * math.degrees(self.angle) - 90)
         self.image = pygame.transform.flip(self.image, 1, 0)
 
+    def checkColisions(self):
+        if pygame.sprite.spritecollide(self, bullets, 0):
+            self.hp -= 75
+            print('pyk')
+
     def getAngle(self, origin, destination):
         x_dist = destination[0] - origin[0]
         y_dist = destination[1] - origin[1]
@@ -202,11 +207,14 @@ class PartridgeNormal(pygame.sprite.Sprite):
         surface.blit(self.image, (self.rect.x, self.rect.y))
 
     def update(self):
+        self.checkColisions()
         if self.rect.y > screen.get_height():
             self.kill()
         # self.moveDown()
         self.goCrazyv2()
         if self.hp < 0:
+            explosion = Explosion2Firework(self.rect.centerx, self.rect.centery, 250)
+            explosions.add(explosion)
             self.kill()
 
 
@@ -388,8 +396,8 @@ class Game:
         for partridge in partridgesNormal:
             partridgesNormal.draw(screen)
         # hit collisions, score and animations
-        getHits = pygame.sprite.groupcollide(partridgesNormal, bullets, True, True)
-
+        # getHits = pygame.sprite.groupcollide(partridgesNormal, bullets, True, True)
+        getHits = []
         for hit in getHits:
             explosion = Explosion2Firework(hit.rect.centerx, hit.rect.centery, 250)
             explosions.add(explosion)
@@ -403,7 +411,7 @@ class Game:
 bullets = pygame.sprite.Group()
 partridgesNormal = pygame.sprite.Group()
 explosions = pygame.sprite.Group()
-theCat = CAT((600, 700))
+theCat = CAT((screen.get_width()/2-32, 700))
 game = Game()
 
 # Custom events
