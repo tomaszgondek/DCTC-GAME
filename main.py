@@ -185,8 +185,9 @@ class PartridgeNormal(pygame.sprite.Sprite):
         hits = pygame.sprite.spritecollide(self, bullets, 1)
         for hit in hits:
             self.hp -= 25
+            dmgP = damagePanel(self.rect.x, self.rect.y, 25, 20, (255, 0, 125))
+            damages.add(dmgP)
             print('hit')
-
 
     def getAngle(self, origin, destination):
         x_dist = destination[0] - origin[0]
@@ -221,7 +222,27 @@ class PartridgeNormal(pygame.sprite.Sprite):
             explosion = Explosion2Firework(self.rect.centerx, self.rect.centery, 250)
             explosions.add(explosion)
             self.kill()
+        self.draw(screen)
 
+class damagePanel(pygame.sprite.Sprite):
+    def __init__(self, x, y, dmg, counter, color):
+        pygame.sprite.Sprite.__init__(self)
+        self.text = str(dmg)
+        self.pos = [x, y]
+        self.color = color
+        self.image = font.render(self.text, True, self.color)
+        self.image = pygame.transform.scale(self.image, (self.image.get_width()/3, self.image.get_height()/3))
+        self.killIn = counter
+        self.initCounter = 0
+
+    def draw(self, surface):
+        surface.blit(self.image, self.pos)
+
+    def update(self):
+        self.initCounter += 1
+        if self.initCounter >= self.killIn:
+            self.kill()
+        self.draw(screen)
 
 class Explosion2Firework(pygame.sprite.Sprite):
     def __init__(self, x, y, scale):
@@ -237,6 +258,9 @@ class Explosion2Firework(pygame.sprite.Sprite):
         self.rect.center = [x, y]
         self.counter = 0
 
+    def draw(self, surface):
+        surface.blit(self.image, self.rect)
+
     def update(self):
         explosionSpeed = 2
         self.counter += 1
@@ -246,6 +270,7 @@ class Explosion2Firework(pygame.sprite.Sprite):
             self.image = self.images[self.index]
         if self.index >= len(self.images) - 1 and self.counter >= explosionSpeed:
             self.kill()
+        self.draw(screen)
 
 
 # handling game itself
@@ -386,18 +411,17 @@ class Game:
             if event.type == createEnemyEvent:
                 partridgesNormal.add(PartridgeNormal(random.randrange(100, 1100), -100, random.randrange(100, 1100), 1000, 100, 5))
                 partridgesNormal.add(PartridgeNormal(random.randrange(100, 1100), -100, random.randrange(100, 1100), 1000, 100, 5))
-        # updating player
         theCat.updateSprite(screen)
         partridgesNormal.update()
-        partridgesNormal.draw(screen)
         bullets.update()
         explosions.update()
-        explosions.draw(screen)
+        damages.update()
         pygame.display.flip()
         clock.tick(60)
 
 
 # Sprite group initialisation
+damages = pygame.sprite.Group()
 bullets = pygame.sprite.Group()
 partridgesNormal = pygame.sprite.Group()
 explosions = pygame.sprite.Group()
