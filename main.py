@@ -63,10 +63,9 @@ text9 = pygame.transform.scale(text9, (text9.get_width()/2, text9.get_height()/2
 # 10th
 # tutaj cały ten, title screen
 
-def getFont(size): # Returns Press-Start-2P in the desired size
+def getFont(size):
     return pygame.font.Font("font/FFFFORWA.TTF", size)
 
-# Sprites
 class CAT(pygame.sprite.Sprite):
     def __init__(self, pos):
         super(CAT, self).__init__()
