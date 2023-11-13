@@ -81,7 +81,10 @@ class CAT(pygame.sprite.Sprite):
         self.hpRatio = self.maxHP / self.hpBarLen
         self.hpChangeSpeed = 5
         self.isAlive = True
-
+        self.laserFire = 10
+        self.plasmaFire = 50
+        self.shotgunFire = 20
+        self.shootTime = 0
     def getDamage(self, amount):
         if self.currentHP > 0:
             self.currentHP -= amount
@@ -99,18 +102,22 @@ class CAT(pygame.sprite.Sprite):
         pygame.draw.rect(screen, (255, 255, 255), (40, screen.get_height() - 65, self.hpBarLen, 25), 4)
 
     def shoot(self, bulletType):
-        if bulletType == 'laser':
+        self.shootTime +=1
+        if bulletType == 'laser' and self.shootTime >= self.laserFire:
             bullets.add(laserBullet(*(self.rect.x + 20, self.rect.y + 25)))
             bullets.add(laserBullet(*(self.rect.x + 40, self.rect.y + 25)))
-        if bulletType == 'plasma':
+            self.shootTime = 0
+        if bulletType == 'plasma' and self.shootTime >= self.plasmaFire:
             bullets.add(plasmaBullet(*(self.rect.center)))
-        if bulletType == 'shotgun':
+            self.shootTime = 0
+        if bulletType == 'shotgun' and self.shootTime >= self.shotgunFire:
             shotgunB1 = shotgutBullet(*(self.rect.center), 0)
             shotgunB2 = shotgutBullet(*(self.rect.center), 45)
             shotgunB3 = shotgutBullet(*(self.rect.center), -45)
             bullets.add(shotgunB1)
             bullets.add(shotgunB2)
             bullets.add(shotgunB3)
+            self.shootTime = 0
 
 
     def moveRight(self, pixels):
@@ -135,6 +142,7 @@ class CAT(pygame.sprite.Sprite):
 
     def playerInput(self):
         keys = pygame.key.get_pressed()
+        left, middle, right = pygame.mouse.get_pressed()
         if keys[pygame.K_a]:
             self.moveLeft(self.playerSpeed)
         if keys[pygame.K_d]:
@@ -143,6 +151,9 @@ class CAT(pygame.sprite.Sprite):
             self.moveUp(self.playerSpeed)
         if keys[pygame.K_s]:
             self.moveDown(self.playerSpeed)
+        if left:
+            self.shoot(self.bulletType)
+
 
     def draw(self, surface):
         surface.blit(self.image, (self.rect.x, self.rect.y))
@@ -188,7 +199,7 @@ class laserBullet(pygame.sprite.Sprite):
 class plasmaBullet(pygame.sprite.Sprite):
     def __init__(self, x, y):
         pygame.sprite.Sprite.__init__(self)
-        self.carryDMG = 65
+        self.carryDMG = 100
         self.pos = (x, y)
         mx, my = pygame.mouse.get_pos()
         self.dir = (mx - x, my - y)
@@ -264,7 +275,7 @@ class PartridgeNormal(pygame.sprite.Sprite):
         self.hp = 100
         self.image = pygame.transform.rotate(self.image, -1 * math.degrees(self.angle) - 90)
         self.image = pygame.transform.flip(self.image, 1, 0)
-        self.damageVis = 0
+        self.carryDMG = 20
 
     def checkColisions(self):
         hits = []
@@ -357,7 +368,6 @@ class Explosion2Firework(pygame.sprite.Sprite):
             self.kill()
         self.draw(screen)
 
-
 # handling game itself
 class Button:
     def __init__(self, image, pos, text_input, font1, base_color, hovering_color):
@@ -388,7 +398,6 @@ class Button:
             self.text = self.font.render(self.text_input, True, self.hovering_color)
         else:
             self.text = self.font.render(self.text_input, True, self.base_color)
-
 
 class Game:
     def __init__(self):
@@ -581,8 +590,6 @@ class Game:
             if event.type == pygame.QUIT:
                 pygame.quit()
                 exit()
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                theCat.shoot(theCat.bulletType)
             if event.type == createEnemyEvent:
                 partridgesNormal.add(PartridgeNormal(random.randrange(100, 1100), -100, random.randrange(100, 1100), 1000, 100, 5))
                 partridgesNormal.add(PartridgeNormal(random.randrange(100, 1100), -100, random.randrange(100, 1100), 1000, 100, 5))
