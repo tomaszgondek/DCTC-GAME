@@ -140,6 +140,16 @@ class CAT(pygame.sprite.Sprite):
         if self.rect.y > screen.get_height() - self.image.get_height():
             self.rect.y = screen.get_height() - self.image.get_height()
 
+    def checkColisions(self):
+        hits = []
+        hits = pygame.sprite.spritecollide(self, bullets, 0)
+        for hit in hits:
+            if hit.isFriendly == False:
+                self.getDamage(hit.carryDMG)
+                dmgP = damagePanel(self.rect.x, self.rect.y, hit.carryDMG, 20, (255, 0, 125))
+                damages.add(dmgP)
+                hit.kill()
+
     def playerInput(self):
         keys = pygame.key.get_pressed()
         left, middle, right = pygame.mouse.get_pressed()
@@ -160,6 +170,7 @@ class CAT(pygame.sprite.Sprite):
 
 
     def updateSprite(self, surface):
+        self.checkColisions()
         self.hpBar()
         self.playerInput()
         self.draw(surface)
@@ -359,6 +370,7 @@ class PerdixShooter(pygame.sprite.Sprite):
             self.rect.x -= self.speed
             if self.rect.x <= 0:
                 self.Toggle = False
+
     def shoot(self):
         self.fireTick += 1
         if self.fireTick >= self.fireRate:
@@ -382,7 +394,6 @@ class PerdixShooter(pygame.sprite.Sprite):
             explosions.add(explosion)
             self.kill()
         self.draw(screen)
-
 
 class damagePanel(pygame.sprite.Sprite):
     def __init__(self, x, y, dmg, counter, color):
