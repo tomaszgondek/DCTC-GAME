@@ -84,6 +84,7 @@ class CAT(pygame.sprite.Sprite):
         self.plasmaFire = 50
         self.shotgunFire = 20
         self.shootTime = 0
+        self.mask = pygame.mask.from_surface(self.image)
     def getDamage(self, amount):
         if self.currentHP > 0:
             self.currentHP -= amount
@@ -141,7 +142,7 @@ class CAT(pygame.sprite.Sprite):
 
     def checkColisions(self):
         hits = []
-        hits = pygame.sprite.spritecollide(self, bullets, 0)
+        hits = pygame.sprite.spritecollide(self, bullets, 0, pygame.sprite.collide_mask)
         for hit in hits:
             if hit.isFriendly == False:
                 self.getDamage(hit.carryDMG)
@@ -193,6 +194,7 @@ class laserBullet(pygame.sprite.Sprite):
         self.bullet = pygame.transform.rotate(self.bullet, angle)
         self.speed = 20
         self.rect = self.bullet.get_rect()
+        self.mask = pygame.mask.from_surface(self.bullet)
 
     def draw(self, surf):
         self.rect = self.bullet.get_rect(center=self.pos)
@@ -228,6 +230,7 @@ class plasmaBullet(pygame.sprite.Sprite):
         self.bullet = pygame.transform.rotate(self.bullet, angle)
         self.speed = speed
         self.rect = self.bullet.get_rect()
+        self.mask = pygame.mask.from_surface(self.bullet)
 
     def draw(self, surf):
         self.rect = self.bullet.get_rect(center=self.pos)
@@ -261,6 +264,7 @@ class shotgutBullet(pygame.sprite.Sprite):
         self.bullet = pygame.transform.rotate(self.bullet, angle)
         self.speed = 30
         self.rect = self.bullet.get_rect()
+        self.mask = pygame.mask.from_surface(self.bullet)
 
     def draw(self, surf):
         self.rect = self.bullet.get_rect(center=self.pos)
@@ -291,6 +295,7 @@ class PerdixNormal(pygame.sprite.Sprite):
         self.image = pygame.transform.rotate(self.image, -1 * math.degrees(self.angle) - 90)
         self.image = pygame.transform.flip(self.image, 1, 0)
         self.carryDMG = 20
+        self.mask = pygame.mask.from_surface(self.image)
 
     def checkColisions(self):
         hits = []
@@ -299,6 +304,7 @@ class PerdixNormal(pygame.sprite.Sprite):
             if hit.isFriendly == True:
                 self.hp -= hit.carryDMG
                 dmgP = damagePanel(self.rect.x, self.rect.y, hit.carryDMG, 20, (255, 0, 125))
+                hit.kill()
                 damages.add(dmgP)
 
     def getAngle(self, origin, destination):
@@ -345,11 +351,12 @@ class PerdixShooter(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = (x, y)
         self.speed = speed
-        self.hp = 100
+        self.hp = 150
         self.carryDMG = 20
         self.Toggle = False
         self.fireRate = 60
         self.fireTick = 0
+        self.mask = pygame.mask.from_surface(self.image)
 
     def checkColisions(self):
         hits = []
@@ -357,6 +364,7 @@ class PerdixShooter(pygame.sprite.Sprite):
         for hit in hits:
             if hit.isFriendly == True:
                 self.hp -= hit.carryDMG
+                hit.kill()
                 dmgP = damagePanel(self.rect.x, self.rect.y, hit.carryDMG, 20, (255, 0, 125))
                 damages.add(dmgP)
 
