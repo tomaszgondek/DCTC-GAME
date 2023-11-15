@@ -88,11 +88,15 @@ class CAT(pygame.sprite.Sprite):
         self.shotgunFire = 20
         self.shootTime = 0
         self.mask = pygame.mask.from_surface(self.image)
+        self.fireCycle = 1
+        self.fireFlag = False
+
     def getDamage(self, amount):
         if self.currentHP > 0:
             self.currentHP -= amount
         if self.currentHP < 0:
             self.currentHP = 0
+            self.isAlive = False
 
     def getNegMana(self, amount):
         if self.currentMana > 0:
@@ -122,16 +126,17 @@ class CAT(pygame.sprite.Sprite):
 
     def shoot(self, bulletType):
         self.shootTime +=1
-        if self.currentMana > 75:
-            if bulletType == 'laser' and self.shootTime >= self.laserFire:
+        if self.currentMana > 0:
+            if bulletType == 'laser' and self.shootTime >= self.laserFire and self.currentMana >= 60:
                 bullets.add(laserBullet(*(self.rect.x + 20, self.rect.y + 25), True))
                 bullets.add(laserBullet(*(self.rect.x + 40, self.rect.y + 25), True))
                 self.shootTime = 0
-                self.getNegMana(75)
-            if bulletType == 'plasma' and self.shootTime >= self.plasmaFire:
-                bullets.add(plasmaBullet(*(self.rect.center)), True)
+                self.getNegMana(60)
+            if bulletType == 'plasma' and self.shootTime >= self.plasmaFire and self.currentMana >= 250:
+                bullets.add(plasmaBullet(*(self.rect.center), True, False, 30))
                 self.shootTime = 0
-            if bulletType == 'shotgun' and self.shootTime >= self.shotgunFire:
+                self.getNegMana(250)
+            if bulletType == 'shotgun' and self.shootTime >= self.shotgunFire and self.currentMana >= 100:
                 shotgunB1 = shotgutBullet(*(self.rect.center), 0, True)
                 shotgunB2 = shotgutBullet(*(self.rect.center), 45, True)
                 shotgunB3 = shotgutBullet(*(self.rect.center), -45, True)
@@ -139,8 +144,7 @@ class CAT(pygame.sprite.Sprite):
                 bullets.add(shotgunB2)
                 bullets.add(shotgunB3)
                 self.shootTime = 0
-
-
+                self.getNegMana(100)
 
     def moveRight(self, pixels):
         self.rect.x += pixels
@@ -168,13 +172,24 @@ class CAT(pygame.sprite.Sprite):
         for hit in hits:
             if hit.isFriendly == False:
                 self.getDamage(hit.carryDMG)
-                dmgP = damagePanel(self.rect.x, self.rect.y, hit.carryDMG, 20, (255, 0, 125))
+                dmgP = damagePanel(self.rect.x, self.rect.y, hit.carryDMG, 20, (65 + hit.carryDMG, 0, 255 - hit.carryDMG))
                 damages.add(dmgP)
                 hit.kill()
 
     def playerInput(self):
-        keys = pygame.key.get_pressed()
+        if self.fireFlag == True:
+            self.fireCycle += 1
+            if self.fireCycle == 4:
+                self.fireCycle = 1
+            if self.fireCycle == 1:
+                self.bulletType = 'laser'
+            elif self.fireCycle == 2:
+                self.bulletType = 'plasma'
+            elif self.fireCycle == 3:
+                self.bulletType = 'shotgun'
+            self.fireFlag = False
         left, middle, right = pygame.mouse.get_pressed()
+        keys = pygame.key.get_pressed()
         if keys[pygame.K_a]:
             self.moveLeft(self.playerSpeed)
         if keys[pygame.K_d]:
@@ -194,7 +209,7 @@ class CAT(pygame.sprite.Sprite):
     def updateSprite(self, surface):
         self.checkColisions()
         self.hpBar()
-        self.getMana(2)
+        self.getMana(3)
         self.manaBar()
         self.playerInput()
         self.draw(surface)
@@ -236,7 +251,7 @@ class laserBullet(pygame.sprite.Sprite):
 class plasmaBullet(pygame.sprite.Sprite):
     def __init__(self, x, y, isFriendly, isDown, speed):
         pygame.sprite.Sprite.__init__(self)
-        self.carryDMG = 100
+        self.carryDMG = 185
         self.isFriendly = isFriendly
         self.pos = (x, y)
         if not isDown:
@@ -272,7 +287,7 @@ class plasmaBullet(pygame.sprite.Sprite):
 class shotgutBullet(pygame.sprite.Sprite):
     def __init__(self, x, y, offset, isFriendly):
         pygame.sprite.Sprite.__init__(self)
-        self.carryDMG = 30
+        self.carryDMG = 60
         self.isFriendly = isFriendly
         self.pos = (x, y)
         mx, my = pygame.mouse.get_pos()
@@ -361,7 +376,7 @@ class PerdixNormal(pygame.sprite.Sprite):
         for hit in hits:
             if hit.isFriendly == True:
                 self.hp -= hit.carryDMG
-                dmgP = damagePanel(self.rect.x, self.rect.y, hit.carryDMG, 20, (255, 0, 125))
+                dmgP = damagePanel(self.rect.x, self.rect.y, hit.carryDMG, 20, (65 + hit.carryDMG, 0, 255 - hit.carryDMG))
                 hit.kill()
                 damages.add(dmgP)
 
@@ -423,7 +438,7 @@ class PerdixShooter(pygame.sprite.Sprite):
             if hit.isFriendly == True:
                 self.hp -= hit.carryDMG
                 hit.kill()
-                dmgP = damagePanel(self.rect.x, self.rect.y, hit.carryDMG, 20, (255, 0, 125))
+                dmgP = damagePanel(self.rect.x, self.rect.y, hit.carryDMG, 20, (65 + hit.carryDMG, 0, 255 - hit.carryDMG))
                 damages.add(dmgP)
 
     def moveLeftRight(self):
@@ -484,7 +499,7 @@ class PerdixSniper(pygame.sprite.Sprite):
             if hit.isFriendly == True:
                 self.hp -= hit.carryDMG
                 hit.kill()
-                dmgP = damagePanel(self.rect.x, self.rect.y, hit.carryDMG, 20, (255, 0, 125))
+                dmgP = damagePanel(self.rect.x, self.rect.y, hit.carryDMG, 20, (65 + hit.carryDMG, 0, 255 - hit.carryDMG))
                 damages.add(dmgP)
 
     def moveLeftRight(self):
@@ -793,6 +808,9 @@ class Game:
             if event.type == pygame.QUIT:
                 pygame.quit()
                 exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_f:
+                    theCat.fireFlag = True
             if event.type == oneSec:
                 self.secCounter += 1
                 print(self.secCounter)
