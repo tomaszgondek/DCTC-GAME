@@ -78,7 +78,10 @@ class CAT(pygame.sprite.Sprite):
         self.maxHP = 1000
         self.hpBarLen = 200
         self.hpRatio = self.maxHP / self.hpBarLen
-        self.hpChangeSpeed = 5
+        self.currentMana = 1000
+        self.maxMana = 1000
+        self.manaBarLen = 200
+        self.manaRatio = self.maxMana / self.manaBarLen
         self.isAlive = True
         self.laserFire = 10
         self.plasmaFire = 50
@@ -91,6 +94,18 @@ class CAT(pygame.sprite.Sprite):
         if self.currentHP < 0:
             self.currentHP = 0
 
+    def getNegMana(self, amount):
+        if self.currentMana > 0:
+            self.currentMana -= amount
+        if self.currentMana < 0:
+            self.currentMana = 0
+
+    def getMana(self, amount):
+        if self.currentMana < self.maxMana:
+            self.currentMana += amount
+        if self.currentMana > self.maxMana:
+            self.currentMana = self.maxMana
+
     def getHealth(self, amount):
         if self.currentHP < self.maxHP:
             self.currentHP += amount
@@ -101,23 +116,30 @@ class CAT(pygame.sprite.Sprite):
         pygame.draw.rect(screen, (255, 0, 0), (40, screen.get_height() - 65, self.currentHP / self.hpRatio, 25))
         pygame.draw.rect(screen, (255, 255, 255), (40, screen.get_height() - 65, self.hpBarLen, 25), 4)
 
+    def manaBar(self):
+        pygame.draw.rect(screen, (100, 100, 255), (40, screen.get_height() - 100, self.currentMana / self.manaRatio, 25))
+        pygame.draw.rect(screen, (255, 255, 255), (40, screen.get_height() - 100, self.manaBarLen, 25), 4)
+
     def shoot(self, bulletType):
         self.shootTime +=1
-        if bulletType == 'laser' and self.shootTime >= self.laserFire:
-            bullets.add(laserBullet(*(self.rect.x + 20, self.rect.y + 25), True))
-            bullets.add(laserBullet(*(self.rect.x + 40, self.rect.y + 25), True))
-            self.shootTime = 0
-        if bulletType == 'plasma' and self.shootTime >= self.plasmaFire:
-            bullets.add(plasmaBullet(*(self.rect.center)), True)
-            self.shootTime = 0
-        if bulletType == 'shotgun' and self.shootTime >= self.shotgunFire:
-            shotgunB1 = shotgutBullet(*(self.rect.center), 0, True)
-            shotgunB2 = shotgutBullet(*(self.rect.center), 45, True)
-            shotgunB3 = shotgutBullet(*(self.rect.center), -45, True)
-            bullets.add(shotgunB1)
-            bullets.add(shotgunB2)
-            bullets.add(shotgunB3)
-            self.shootTime = 0
+        if self.currentMana > 75:
+            if bulletType == 'laser' and self.shootTime >= self.laserFire:
+                bullets.add(laserBullet(*(self.rect.x + 20, self.rect.y + 25), True))
+                bullets.add(laserBullet(*(self.rect.x + 40, self.rect.y + 25), True))
+                self.shootTime = 0
+                self.getNegMana(75)
+            if bulletType == 'plasma' and self.shootTime >= self.plasmaFire:
+                bullets.add(plasmaBullet(*(self.rect.center)), True)
+                self.shootTime = 0
+            if bulletType == 'shotgun' and self.shootTime >= self.shotgunFire:
+                shotgunB1 = shotgutBullet(*(self.rect.center), 0, True)
+                shotgunB2 = shotgutBullet(*(self.rect.center), 45, True)
+                shotgunB3 = shotgutBullet(*(self.rect.center), -45, True)
+                bullets.add(shotgunB1)
+                bullets.add(shotgunB2)
+                bullets.add(shotgunB3)
+                self.shootTime = 0
+
 
 
     def moveRight(self, pixels):
@@ -172,12 +194,15 @@ class CAT(pygame.sprite.Sprite):
     def updateSprite(self, surface):
         self.checkColisions()
         self.hpBar()
+        self.getMana(2)
+        self.manaBar()
         self.playerInput()
         self.draw(surface)
 
 class laserBullet(pygame.sprite.Sprite):
     def __init__(self, x, y, isFriendly):
         pygame.sprite.Sprite.__init__(self)
+        self.manaCost = 75
         self.carryDMG = 25
         self.isFriendly = isFriendly
         self.pos = (x, y)
