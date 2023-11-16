@@ -7,7 +7,7 @@ screen = pygame.display.set_mode((1200, 800))
 font = pygame.font.Font('font/FFFFORWA.TTF', 50)
 clock = pygame.time.Clock()
 pygame.display.set_caption("Don't Crash the cat: Back for Blood")
-ctr = 0
+score = 0
 saveState = []
 with open('save/levels.txt') as f:
     while True:
@@ -418,6 +418,8 @@ class PerdixNormal(pygame.sprite.Sprite):
         if self.hp <= 0:
             explosion = Explosion2Firework(self.rect.centerx, self.rect.centery, 250)
             explosions.add(explosion)
+            global score
+            score += 1
             self.kill()
         self.draw(screen)
 
@@ -478,6 +480,8 @@ class PerdixShooter(pygame.sprite.Sprite):
         if self.hp <= 0:
             explosion = Explosion2Firework(self.rect.centerx, self.rect.centery, 250)
             explosions.add(explosion)
+            global score
+            score += 3
             self.kill()
         self.draw(screen)
 
@@ -540,6 +544,8 @@ class PerdixSniper(pygame.sprite.Sprite):
         if self.hp <= 0:
             explosion = Explosion2Firework(self.rect.centerx, self.rect.centery, 250)
             explosions.add(explosion)
+            global score
+            score += 5
             self.kill()
         self.draw(screen)
 
@@ -630,6 +636,11 @@ class Game:
         self.level01Done = int(saveState[1])
         self.currentLevel = self.level
         self.secCounter = 0
+        self.score = 0
+
+    def scoreDisplay(self, score):
+        scoreImg = font.render(str(score), True, (0, 0, 100))
+        screen.blit(scoreImg, (1070, 700))
 
     def stageManager(self):
         if self.level == "menu":
@@ -854,6 +865,7 @@ class Game:
         bullets.update()
         explosions.update()
         damages.update()
+        self.scoreDisplay(score)
         pygame.display.flip()
         clock.tick(60)
 
