@@ -639,8 +639,9 @@ class Game:
         self.score = 0
 
     def scoreDisplay(self, score):
-        scoreImg = font.render(str(score), True, (0, 0, 100))
-        screen.blit(scoreImg, (1070, 700))
+        scoreImg = font.render(f"SCORE: {score}", True, (0, 0, 100))
+        scoreImg = pygame.transform.scale_by(scoreImg, 0.5)
+        screen.blit(scoreImg, (1000, 750))
 
     def stageManager(self):
         if self.level == "menu":
