@@ -846,13 +846,9 @@ class Game:
                 if self.secCounter == 18:
                     partridgesNormal.add(PerdixSniper(-100, 200, 100, 3, theCat.rect.x, theCat.rect.y))
                     partridgesNormal.add(PerdixSniper(1300, 80, 100, 3, theCat.rect.x, theCat.rect.y))
-
-
-
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     self.level = 'pause'
-
         theCat.updateSprite(screen)
         partridgesNormal.update()
         bullets.update()
