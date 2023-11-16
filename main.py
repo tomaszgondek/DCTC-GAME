@@ -72,6 +72,7 @@ class CAT(pygame.sprite.Sprite):
         self.image = pygame.image.load('graphics/pngegg.png').convert_alpha()
         self.rect = self.image.get_rect(midbottom=(64, 64))
         self.rect.center = pos
+        self.dmgPowerup = 1
         self.playerSpeed = 5
         self.bulletType = 'laser'
         self.currentHP = 1000
@@ -90,6 +91,8 @@ class CAT(pygame.sprite.Sprite):
         self.mask = pygame.mask.from_surface(self.image)
         self.fireCycle = 1
         self.fireFlag = False
+        self.ManaCostRedux = 1
+
 
     def getDamage(self, amount):
         if self.currentHP > 0:
@@ -128,23 +131,23 @@ class CAT(pygame.sprite.Sprite):
         self.shootTime +=1
         if self.currentMana > 0:
             if bulletType == 'laser' and self.shootTime >= self.laserFire and self.currentMana >= 60:
-                bullets.add(laserBullet(*(self.rect.x + 20, self.rect.y + 25), True))
-                bullets.add(laserBullet(*(self.rect.x + 40, self.rect.y + 25), True))
+                bullets.add(laserBullet(*(self.rect.x + 20, self.rect.y + 25), True, self.dmgPowerup))
+                bullets.add(laserBullet(*(self.rect.x + 40, self.rect.y + 25), True, self.dmgPowerup))
                 self.shootTime = 0
-                self.getNegMana(60)
+                self.getNegMana(60 * self.ManaCostRedux)
             if bulletType == 'plasma' and self.shootTime >= self.plasmaFire and self.currentMana >= 250:
-                bullets.add(plasmaBullet(*(self.rect.center), True, False, 30))
+                bullets.add(plasmaBullet(*(self.rect.center), True, False, 30, self.dmgPowerup))
                 self.shootTime = 0
-                self.getNegMana(250)
+                self.getNegMana(250 * self.ManaCostRedux)
             if bulletType == 'shotgun' and self.shootTime >= self.shotgunFire and self.currentMana >= 100:
-                shotgunB1 = shotgutBullet(*(self.rect.center), 0, True)
-                shotgunB2 = shotgutBullet(*(self.rect.center), 45, True)
-                shotgunB3 = shotgutBullet(*(self.rect.center), -45, True)
+                shotgunB1 = shotgutBullet(*(self.rect.center), 0, True, self.dmgPowerup)
+                shotgunB2 = shotgutBullet(*(self.rect.center), 45, True, self.dmgPowerup)
+                shotgunB3 = shotgutBullet(*(self.rect.center), -45, True, self.dmgPowerup)
                 bullets.add(shotgunB1)
                 bullets.add(shotgunB2)
                 bullets.add(shotgunB3)
                 self.shootTime = 0
-                self.getNegMana(100)
+                self.getNegMana(100 * self.ManaCostRedux)
 
     def moveRight(self, pixels):
         self.rect.x += pixels
@@ -215,10 +218,11 @@ class CAT(pygame.sprite.Sprite):
         self.draw(surface)
 
 class laserBullet(pygame.sprite.Sprite):
-    def __init__(self, x, y, isFriendly):
+    def __init__(self, x, y, isFriendly, dmgIncrease):
         pygame.sprite.Sprite.__init__(self)
+        self.dmgMultip = dmgIncrease
         self.manaCost = 75
-        self.carryDMG = 25
+        self.carryDMG = 25 * self.dmgMultip
         self.isFriendly = isFriendly
         self.pos = (x, y)
         mx, my = pygame.mouse.get_pos()
@@ -249,9 +253,10 @@ class laserBullet(pygame.sprite.Sprite):
             self.kill()
 
 class plasmaBullet(pygame.sprite.Sprite):
-    def __init__(self, x, y, isFriendly, isDown, speed):
+    def __init__(self, x, y, isFriendly, isDown, speed, dmgIncrease):
         pygame.sprite.Sprite.__init__(self)
-        self.carryDMG = 185
+        self.dmgIncrease = dmgIncrease
+        self.carryDMG = 185 * dmgIncrease
         self.isFriendly = isFriendly
         self.pos = (x, y)
         if not isDown:
@@ -285,9 +290,10 @@ class plasmaBullet(pygame.sprite.Sprite):
             self.kill()
 
 class shotgutBullet(pygame.sprite.Sprite):
-    def __init__(self, x, y, offset, isFriendly):
+    def __init__(self, x, y, offset, isFriendly, dmgIncrease):
         pygame.sprite.Sprite.__init__(self)
-        self.carryDMG = 60
+        self.dmgMultip = dmgIncrease
+        self.carryDMG = 60 * dmgIncrease
         self.isFriendly = isFriendly
         self.pos = (x, y)
         mx, my = pygame.mouse.get_pos()
@@ -454,7 +460,7 @@ class PerdixShooter(pygame.sprite.Sprite):
     def shoot(self):
         self.fireTick += 1
         if self.fireTick >= self.fireRate:
-            bullet = plasmaBullet(self.rect.centerx, self.rect.centery+30, False, True, 8)
+            bullet = plasmaBullet(self.rect.centerx, self.rect.centery+30, False, True, 8, 1)
             bullets.add(bullet)
             self.fireTick = 0
 
