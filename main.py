@@ -8,6 +8,7 @@ font = pygame.font.Font('font/FFFFORWA.TTF', 50)
 clock = pygame.time.Clock()
 pygame.display.set_caption("Don't Crash the cat: Back for Blood")
 score = 0
+secCounter = 0
 saveState = []
 with open('save/levels.txt') as f:
     while True:
@@ -65,6 +66,23 @@ text9 = pygame.transform.scale(text9, (text9.get_width()/2, text9.get_height()/2
 
 def getFont(size):
     return pygame.font.Font("font/FFFFORWA.TTF", size)
+
+def blit_text(surface, text, pos, font, color=pygame.Color('black')):
+    words = [word.split(' ') for word in text.splitlines()]  # 2D array where each row is a list of words.
+    space = font.size(' ')[0]  # The width of a space.
+    max_width, max_height = surface.get_size()
+    x, y = pos
+    for line in words:
+        for word in line:
+            word_surface = font.render(word, 0, color)
+            word_width, word_height = word_surface.get_size()
+            if x + word_width >= max_width:
+                x = pos[0]  # Reset the x.
+                y += word_height  # Start on new row.
+            surface.blit(word_surface, (x, y))
+            x += word_width + space
+        x = pos[0]  # Reset the x.
+        y += word_height  # Start on new row.
 
 class CAT(pygame.sprite.Sprite):
     def __init__(self, pos):
@@ -681,6 +699,8 @@ class Game:
             self.pause()
         if self.level == 'levelSelector':
             self.levelSelector()
+        if self.level == 'endLevelScreen':
+            self.endLevelScreen()
 
     def mainMenu(self):
         menuText = font.render("DON'T CRASH THE CAT: BACK FOR BLOOD", True, (243, 245, 156))
@@ -747,6 +767,44 @@ class Game:
                         exit()
             pygame.display.flip()
             clock.tick(60)
+
+    def endLevelScreen(self):
+        global score
+        scoreText = str(score)
+        self.resetGame()
+        textEnd = font.render(f"YOU HAVE BEATEN THE LEVEL!", True, (243, 245, 156))
+        scoreEnd = font.render(scoreText, True, (243, 245, 156))
+        textEnd = pygame.transform.scale(textEnd, (textEnd.get_width() / 2, textEnd.get_height() / 2))
+        scoreEnd = pygame.transform.scale(scoreEnd, (scoreEnd.get_width() / 2, scoreEnd.get_height() / 2))
+        isRunning = True
+        while isRunning:
+            screen.fill((75, 4, 94))
+            menuMousePos = pygame.mouse.get_pos()
+            screen.blit(textEnd, (screen.get_width() / 2 - textEnd.get_width() / 2, 100))
+            screen.blit(scoreEnd, (screen.get_width() / 2 - scoreEnd.get_width() / 2, 150))
+            selectorButton = Button(image=playbuttonWide,
+                                 pos=(screen.get_width() / 2, 300), text_input="Next",
+                                 font1=getFont(75), base_color=(50, 50, 50), hovering_color=(192, 152, 60))
+            quitButton = Button(image=playbuttonWide,
+                                pos=(screen.get_width() / 2, 600), text_input="QUIT",
+                                font1=getFont(75), base_color=(50, 50, 50), hovering_color=(192, 152, 60))
+            for button in [selectorButton, quitButton]:
+                button.changeColor(menuMousePos)
+                button.update(screen)
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    exit()
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if selectorButton.checkForInput(menuMousePos):
+                        self.level = 'levelSelector'
+                        isRunning = False
+                    if quitButton.checkForInput(menuMousePos):
+                        pygame.quit()
+                        exit()
+            pygame.display.flip()
+            clock.tick(60)
+
 
     def levelSelector(self):
         menuText = font.render("LEVELS:", True, (243, 245, 156))
@@ -888,6 +946,8 @@ class Game:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     self.level = 'pause'
+                if event.key == pygame.K_t:
+                    self.level = 'endLevelScreen'
         theCat.updateSprite(screen)
         partridgesNormal.update()
         bullets.update()
@@ -896,6 +956,14 @@ class Game:
         self.scoreDisplay(score)
         pygame.display.flip()
         clock.tick(60)
+
+    def resetGame(self):
+        global score
+        self.secCounter = 0
+        score = 0
+        partridgesNormal.empty()
+        bullets.empty()
+        theCat.reset()
 
 
 # Sprite group initialisation
@@ -911,6 +979,5 @@ pygame.time.set_timer(oneSec, t)
 
 # main loop
 while True:
-    secCounter = 0;
     game.stageManager()
 
