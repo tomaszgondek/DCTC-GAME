@@ -72,6 +72,7 @@ class CAT(pygame.sprite.Sprite):
         self.image = pygame.image.load('graphics/pngegg.png').convert_alpha()
         self.rect = self.image.get_rect(midbottom=(64, 64))
         self.rect.center = pos
+        self.initPos = pos
         self.dmgPowerup = 1
         self.playerSpeed = 5
         self.bulletType = 'laser'
@@ -92,6 +93,32 @@ class CAT(pygame.sprite.Sprite):
         self.fireCycle = 1
         self.fireFlag = False
         self.ManaCostRedux = 1
+
+    def reset(self):
+        self.image = pygame.image.load('graphics/pngegg.png').convert_alpha()
+        self.rect = self.image.get_rect(midbottom=(64, 64))
+        self.rect.center = self.initPos
+        self.dmgPowerup = 1
+        self.playerSpeed = 5
+        self.bulletType = 'laser'
+        self.currentHP = 1000
+        self.maxHP = 1000
+        self.hpBarLen = 200
+        self.hpRatio = self.maxHP / self.hpBarLen
+        self.currentMana = 1000
+        self.maxMana = 1000
+        self.manaBarLen = 200
+        self.manaRatio = self.maxMana / self.manaBarLen
+        self.isAlive = True
+        self.laserFire = 10
+        self.plasmaFire = 50
+        self.shotgunFire = 20
+        self.shootTime = 0
+        self.mask = pygame.mask.from_surface(self.image)
+        self.fireCycle = 1
+        self.fireFlag = False
+        self.ManaCostRedux = 1
+
 
 
     def getDamage(self, amount):
