@@ -10,6 +10,7 @@ pygame.display.set_caption("Don't Crash the cat: Back for Blood")
 score = 0
 secCounter = 0
 saveState = []
+uiBackgroundColor = (37, 0, 46)
 with open('save/levels.txt') as f:
     while True:
         levelSave = f.readline()
@@ -707,7 +708,7 @@ class Game:
         menuText = pygame.transform.scale(menuText, (menuText.get_width() / 2, menuText.get_height() / 2))
         isRunning = True
         while isRunning:
-            screen.fill((75, 4, 94))
+            screen.fill(uiBackgroundColor)
             menuMousePos = pygame.mouse.get_pos()
             menuRect = menuText.get_rect(center=(screen.get_width()/2, 300))
             playButton = Button(image=(pygame.image.load('graphics/PLAYBUTTON.jpg')),
@@ -740,7 +741,7 @@ class Game:
         menuText = pygame.transform.scale(menuText, (menuText.get_width() / 2, menuText.get_height() / 2))
         isRunning = True
         while isRunning:
-            screen.fill((75, 4, 94))
+            screen.fill(uiBackgroundColor)
             menuMousePos = pygame.mouse.get_pos()
             menuRect = menuText.get_rect(center=(screen.get_width()/2, 300))
             playButton = Button(image=(pygame.image.load('graphics/PLAYBUTTON.jpg')),
@@ -778,7 +779,7 @@ class Game:
         scoreEnd = pygame.transform.scale(scoreEnd, (scoreEnd.get_width() / 2, scoreEnd.get_height() / 2))
         isRunning = True
         while isRunning:
-            screen.fill((75, 4, 94))
+            screen.fill(uiBackgroundColor)
             menuMousePos = pygame.mouse.get_pos()
             screen.blit(textEnd, (screen.get_width() / 2 - textEnd.get_width() / 2, 100))
             screen.blit(scoreEnd, (screen.get_width() / 2 - scoreEnd.get_width() / 2, 150))
@@ -811,7 +812,7 @@ class Game:
         menuText = pygame.transform.scale(menuText, (menuText.get_width() / 2, menuText.get_height() / 2))
         isRunning = True
         while isRunning:
-            screen.fill((75, 4, 94))
+            screen.fill(uiBackgroundColor)
             menuMousePos = pygame.mouse.get_pos()
             menuRect = menuText.get_rect(center=(screen.get_width()/2, 300))
             if self.levelIntroDone == True:
