@@ -335,6 +335,43 @@ class plasmaBullet(pygame.sprite.Sprite):
         if self.pos[0] > screen.get_width() or self.pos[0] < 0 or self.pos[1] > screen.get_height() or self.pos[1] < 0:
             self.kill()
 
+class plasmaBulletv2(pygame.sprite.Sprite):
+    def __init__(self, x, y, isFriendly, isDown, speed, dmgIncrease):
+        pygame.sprite.Sprite.__init__(self)
+        self.dmgIncrease = dmgIncrease
+        self.carryDMG = 185 * dmgIncrease
+        self.isFriendly = isFriendly
+        self.pos = (x, y)
+        if not isDown:
+            mx, my = pygame.mouse.get_pos()
+        if isDown:
+            mx, my = x, 1000
+        self.dir = (mx - x, my - y)
+        length = math.hypot(*self.dir)
+        if length == 0.0:
+            self.dir = (0, -1)
+        else:
+            self.dir = (self.dir[0]/length, self.dir[1]/length)
+        angle = math.degrees(math.atan2(-self.dir[1], self.dir[0]))
+        self.bullet = pygame.image.load('graphics/bullets/Laser_Sprites/51.png')
+        self.bullet = pygame.transform.scale(self.bullet, (100, 150))
+        self.bullet = pygame.transform.rotate(self.bullet, angle)
+        self.speed = speed
+        self.rect = self.bullet.get_rect()
+        self.mask = pygame.mask.from_surface(self.bullet)
+
+    def draw(self, surf):
+        self.rect = self.bullet.get_rect(center=self.pos)
+        surf.blit(self.bullet, self.rect)
+
+    def update(self):
+        self.pos = (self.pos[0] + self.dir[0] * self.speed,
+                    self.pos[1] + self.dir[1] * self.speed)
+        self.rect.move_ip(0,5)
+        self.draw(screen)
+        if self.pos[0] > screen.get_width() or self.pos[0] < 0 or self.pos[1] > screen.get_height() or self.pos[1] < 0:
+            self.kill()
+
 class shotgutBullet(pygame.sprite.Sprite):
     def __init__(self, x, y, offset, isFriendly, dmgIncrease):
         pygame.sprite.Sprite.__init__(self)
@@ -386,6 +423,39 @@ class sniperBullet(pygame.sprite.Sprite):
         angle = math.degrees(math.atan2(-self.dir[1], self.dir[0]))
         self.bullet = pygame.image.load('graphics/bullets/Laser_Sprites/03.png')
         self.bullet = pygame.transform.scale(self.bullet, (200, 32))
+        self.bullet = pygame.transform.rotate(self.bullet, angle)
+        self.speed = 20
+        self.rect = self.bullet.get_rect()
+        self.mask = pygame.mask.from_surface(self.bullet)
+
+    def draw(self, surf):
+        self.rect = self.bullet.get_rect(center=self.pos)
+        surf.blit(self.bullet, self.rect)
+
+    def update(self):
+        self.pos = (self.pos[0] + self.dir[0] * self.speed,
+                    self.pos[1] + self.dir[1] * self.speed)
+        self.rect.move_ip(0,5)
+        self.draw(screen)
+        if self.pos[0] > screen.get_width() or self.pos[0] < 0 or self.pos[1] > screen.get_height() or self.pos[1] < 0:
+            self.kill()
+
+class sniperBulletv2(pygame.sprite.Sprite):
+    def __init__(self, x, y, isFriendly, tx, ty):
+        pygame.sprite.Sprite.__init__(self)
+        self.carryDMG = 5
+        self.isFriendly = isFriendly
+        self.pos = (x, y)
+        mx, my = tx, ty
+        self.dir = (mx - x, my - y)
+        length = math.hypot(*self.dir)
+        if length == 0.0:
+            self.dir = (0, -1)
+        else:
+            self.dir = (self.dir[0]/length, self.dir[1]/length)
+        angle = math.degrees(math.atan2(-self.dir[1], self.dir[0]))
+        self.bullet = pygame.image.load('graphics/bullets/Laser_Sprites/10.png')
+        self.bullet = pygame.transform.scale(self.bullet, (200, 50))
         self.bullet = pygame.transform.rotate(self.bullet, angle)
         self.speed = 20
         self.rect = self.bullet.get_rect()
@@ -607,7 +677,7 @@ class frediKamionka(pygame.sprite.Sprite):
         self.hp = 2000
         self.carryDMG = 20
         self.Toggle = False
-        self.fireRate = 25
+        self.fireRate = 15
         self.fireTick = 0
         self.mask = pygame.mask.from_surface(self.image)
         self.target = (targetX, targetY)
@@ -635,8 +705,10 @@ class frediKamionka(pygame.sprite.Sprite):
     def shoot(self):
         self.fireTick += 1
         if self.fireTick >= self.fireRate:
-            bullet = sniperBullet(self.rect.centerx, self.rect.centery+30, False, self.target[0], self.target[1])
-            bullets.add(bullet)
+            bullet1 = sniperBulletv2(self.rect.centerx, self.rect.centery+30, False, self.target[0], self.target[1])
+            bullet2 = plasmaBulletv2(self.rect.centerx, self.rect.centery+30, False, True, 8, 1)
+            bullets.add(bullet1)
+            bullets.add(bullet2)
             self.fireTick = 0
 
 
