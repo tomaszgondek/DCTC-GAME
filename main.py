@@ -175,7 +175,7 @@ class CAT(pygame.sprite.Sprite):
         pygame.draw.rect(screen, (255, 255, 255), (40, screen.get_height() - 100, self.manaBarLen, 25), 4)
 
     def shoot(self, bulletType):
-        self.shootTime +=1
+        self.shootTime += 1
         if self.currentMana > 0:
             if bulletType == 'laser' and self.shootTime >= self.laserFire and self.currentMana >= 60:
                 bullets.add(laserBullet(*(self.rect.x + 20, self.rect.y + 25), True, self.dmgPowerup))
@@ -325,7 +325,44 @@ class plasmaBullet(pygame.sprite.Sprite):
         else:
             self.dir = (self.dir[0]/length, self.dir[1]/length)
         angle = math.degrees(math.atan2(-self.dir[1], self.dir[0]))
-        self.bullet = pygame.image.load('graphics/bullets/Laser_Sprites/59.png')
+        self.bullet = pygame.image.load('graphics/bullets/Laser_Sprites/27.png')
+        self.bullet = pygame.transform.scale(self.bullet, (100, 150))
+        self.bullet = pygame.transform.rotate(self.bullet, angle)
+        self.speed = speed
+        self.rect = self.bullet.get_rect()
+        self.mask = pygame.mask.from_surface(self.bullet)
+
+    def draw(self, surf):
+        self.rect = self.bullet.get_rect(center=self.pos)
+        surf.blit(self.bullet, self.rect)
+
+    def update(self):
+        self.pos = (self.pos[0] + self.dir[0] * self.speed,
+                    self.pos[1] + self.dir[1] * self.speed)
+        self.rect.move_ip(0,5)
+        self.draw(screen)
+        if self.pos[0] > screen.get_width() or self.pos[0] < 0 or self.pos[1] > screen.get_height() or self.pos[1] < 0:
+            self.kill()
+
+class plasmaBulletv2(pygame.sprite.Sprite):
+    def __init__(self, x, y, isFriendly, isDown, speed, dmgIncrease):
+        pygame.sprite.Sprite.__init__(self)
+        self.dmgIncrease = dmgIncrease
+        self.carryDMG = 185 * dmgIncrease
+        self.isFriendly = isFriendly
+        self.pos = (x, y)
+        if not isDown:
+            mx, my = pygame.mouse.get_pos()
+        if isDown:
+            mx, my = x, 1000
+        self.dir = (mx - x, my - y)
+        length = math.hypot(*self.dir)
+        if length == 0.0:
+            self.dir = (0, -1)
+        else:
+            self.dir = (self.dir[0]/length, self.dir[1]/length)
+        angle = math.degrees(math.atan2(-self.dir[1], self.dir[0]))
+        self.bullet = pygame.image.load('graphics/bullets/Laser_Sprites/51.png')
         self.bullet = pygame.transform.scale(self.bullet, (100, 150))
         self.bullet = pygame.transform.rotate(self.bullet, angle)
         self.speed = speed
@@ -395,6 +432,39 @@ class sniperBullet(pygame.sprite.Sprite):
         angle = math.degrees(math.atan2(-self.dir[1], self.dir[0]))
         self.bullet = pygame.image.load('graphics/bullets/Laser_Sprites/03.png')
         self.bullet = pygame.transform.scale(self.bullet, (200, 32))
+        self.bullet = pygame.transform.rotate(self.bullet, angle)
+        self.speed = 20
+        self.rect = self.bullet.get_rect()
+        self.mask = pygame.mask.from_surface(self.bullet)
+
+    def draw(self, surf):
+        self.rect = self.bullet.get_rect(center=self.pos)
+        surf.blit(self.bullet, self.rect)
+
+    def update(self):
+        self.pos = (self.pos[0] + self.dir[0] * self.speed,
+                    self.pos[1] + self.dir[1] * self.speed)
+        self.rect.move_ip(0,5)
+        self.draw(screen)
+        if self.pos[0] > screen.get_width() or self.pos[0] < 0 or self.pos[1] > screen.get_height() or self.pos[1] < 0:
+            self.kill()
+
+class sniperBulletv2(pygame.sprite.Sprite):
+    def __init__(self, x, y, isFriendly, tx, ty):
+        pygame.sprite.Sprite.__init__(self)
+        self.carryDMG = 5
+        self.isFriendly = isFriendly
+        self.pos = (x, y)
+        mx, my = tx, ty
+        self.dir = (mx - x, my - y)
+        length = math.hypot(*self.dir)
+        if length == 0.0:
+            self.dir = (0, -1)
+        else:
+            self.dir = (self.dir[0]/length, self.dir[1]/length)
+        angle = math.degrees(math.atan2(-self.dir[1], self.dir[0]))
+        self.bullet = pygame.image.load('graphics/bullets/Laser_Sprites/10.png')
+        self.bullet = pygame.transform.scale(self.bullet, (200, 50))
         self.bullet = pygame.transform.rotate(self.bullet, angle)
         self.speed = 20
         self.rect = self.bullet.get_rect()
@@ -582,6 +652,72 @@ class PerdixSniper(pygame.sprite.Sprite):
         if self.fireTick >= self.fireRate:
             bullet = sniperBullet(self.rect.centerx, self.rect.centery+30, False, self.target[0], self.target[1])
             bullets.add(bullet)
+            self.fireTick = 0
+
+
+    def draw(self, surface):
+        surface.blit(self.image, (self.rect.x, self.rect.y))
+
+    def update(self):
+        self.checkColisions()
+        self.shoot()
+        self.target = (theCat.rect.centerx, theCat.rect.centery)
+        if self.rect.y > screen.get_height():
+            self.kill()
+        # self.moveDown()
+        self.moveLeftRight()
+        if self.hp <= 0:
+            explosion = Explosion2Firework(self.rect.centerx, self.rect.centery, 250)
+            explosions.add(explosion)
+            global score
+            score += 5
+            self.kill()
+        self.draw(screen)
+
+class frediKamionka(pygame.sprite.Sprite):
+    def __init__(self, x, y, scale, speed, targetX, targetY):
+        pygame.sprite.Sprite.__init__(self)
+        self.pos = (x, y)
+        self.image = pygame.image.load('graphics/fredi.jpg')
+        self.image = pygame.transform.scale(self.image, (scale, scale))
+        self.rect = self.image.get_rect()
+        self.rect.center = (x, y)
+        self.speed = speed
+        self.hp = 2000
+        self.carryDMG = 20
+        self.Toggle = False
+        self.fireRate = 15
+        self.fireTick = 0
+        self.mask = pygame.mask.from_surface(self.image)
+        self.target = (targetX, targetY)
+
+    def checkColisions(self):
+        hits = []
+        hits = pygame.sprite.spritecollide(self, bullets, 0)
+        for hit in hits:
+            if hit.isFriendly == True:
+                self.hp -= hit.carryDMG
+                hit.kill()
+                dmgP = damagePanel(self.rect.x, self.rect.y, hit.carryDMG, 20, (65 + hit.carryDMG, 0, 255 - hit.carryDMG))
+                damages.add(dmgP)
+
+    def moveLeftRight(self):
+        if not self.Toggle:
+            self.rect.x += self.speed
+            if self.rect.x >= screen.get_width()/3 - self.image.get_width()/3:
+                self.Toggle = True
+        if self.Toggle == True:
+            self.rect.x -= self.speed
+            if self.rect.x <= 0:
+                self.Toggle = False
+
+    def shoot(self):
+        self.fireTick += 1
+        if self.fireTick >= self.fireRate:
+            bullet1 = sniperBulletv2(self.rect.centerx, self.rect.centery+30, False, self.target[0], self.target[1])
+            bullet2 = plasmaBulletv2(self.rect.centerx, self.rect.centery+30, False, True, 8, 1)
+            bullets.add(bullet1)
+            bullets.add(bullet2)
             self.fireTick = 0
 
 
@@ -995,6 +1131,8 @@ class Game:
                 if self.secCounter == 18:
                     partridgesNormal.add(PerdixSniper(-100, 200, 100, 3, theCat.rect.x, theCat.rect.y))
                     partridgesNormal.add(PerdixSniper(1300, 80, 100, 3, theCat.rect.x, theCat.rect.y))
+                if self.secCounter == 20:
+                    partridgesNormal.add(frediKamionka(-100, 200, 400, 3, theCat.rect.x, theCat.rect.y))
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     self.level = 'pause'
