@@ -226,13 +226,13 @@ class CAT(pygame.sprite.Sprite):
         for hit in hits:
             if hit.isFriendly == False:
                 self.getDamage(hit.carryDMG)
-                dmgP = damagePanel(self.rect.x, self.rect.y, hit.carryDMG, 20, (65 + hit.carryDMG, 0, 255 - hit.carryDMG))
+                dmgP = damagePanel(self.rect.x, self.rect.y, hit.carryDMG, 20, (min(65 + hit.carryDMG, 255), 0, max(255 - hit.carryDMG, 0)))
                 damages.add(dmgP)
                 hit.kill()
         for collision in collisions:
             dmgDone = round(collision.hp*0.75)
             self.getDamage(dmgDone)
-            dmgP = damagePanel(self.rect.x, self.rect.y, dmgDone, 20, (65 + dmgDone, 0, 255 - dmgDone))
+            dmgP = damagePanel(self.rect.x, self.rect.y, dmgDone, 20, (min(65 + collision.hp, 255), 0, max(255 - collision.hp, 0)))
             damages.add(dmgP)
             collision.hp = 0
         for powerupGet in powerupGets:
@@ -516,7 +516,7 @@ class PerdixNormal(pygame.sprite.Sprite):
         for hit in hits:
             if hit.isFriendly == True:
                 self.hp -= hit.carryDMG
-                dmgP = damagePanel(self.rect.x, self.rect.y, hit.carryDMG, 20, (65 + hit.carryDMG, 0, 255 - hit.carryDMG))
+                dmgP = damagePanel(self.rect.x, self.rect.y, hit.carryDMG, 20, (min(65 + hit.carryDMG, 255), 0, max(255 - hit.carryDMG, 0)))
                 hit.kill()
                 damages.add(dmgP)
 
@@ -606,7 +606,7 @@ class PerdixShooter(pygame.sprite.Sprite):
             if hit.isFriendly == True:
                 self.hp -= hit.carryDMG
                 hit.kill()
-                dmgP = damagePanel(self.rect.x, self.rect.y, hit.carryDMG, 20, (65 + hit.carryDMG, 0, 255 - hit.carryDMG))
+                dmgP = damagePanel(self.rect.x, self.rect.y, hit.carryDMG, 20, (min(65 + hit.carryDMG, 255), 0, max(255 - hit.carryDMG, 0)))
                 damages.add(dmgP)
 
     def moveLeftRight(self):
@@ -669,7 +669,7 @@ class PerdixSniper(pygame.sprite.Sprite):
             if hit.isFriendly == True:
                 self.hp -= hit.carryDMG
                 hit.kill()
-                dmgP = damagePanel(self.rect.x, self.rect.y, hit.carryDMG, 20, (65 + hit.carryDMG, 0, 255 - hit.carryDMG))
+                dmgP = damagePanel(self.rect.x, self.rect.y, hit.carryDMG, 20, (min(65 + hit.carryDMG, 255), 0, max(255 - hit.carryDMG, 0)))
                 damages.add(dmgP)
 
     def moveLeftRight(self):
