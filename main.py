@@ -143,9 +143,10 @@ class CAT(pygame.sprite.Sprite):
     def getDamage(self, amount):
         if self.currentHP > 0:
             self.currentHP -= amount
-        if self.currentHP < 0:
-            self.currentHP = 0
+        if self.currentHP <= 0:
             self.isAlive = False
+            self.currentHP = 0
+
 
     def getNegMana(self, amount):
         if self.currentMana > 0:
@@ -216,6 +217,8 @@ class CAT(pygame.sprite.Sprite):
             self.rect.y = screen.get_height() - self.image.get_height()
 
     def checkColisions(self):
+        collisions = []
+        collisions = pygame.sprite.spritecollide(self, partridgesNormal, 0, pygame.sprite.collide_mask)
         hits = []
         hits = pygame.sprite.spritecollide(self, bullets, 0, pygame.sprite.collide_mask)
         for hit in hits:
@@ -224,6 +227,12 @@ class CAT(pygame.sprite.Sprite):
                 dmgP = damagePanel(self.rect.x, self.rect.y, hit.carryDMG, 20, (65 + hit.carryDMG, 0, 255 - hit.carryDMG))
                 damages.add(dmgP)
                 hit.kill()
+        for collision in collisions:
+            dmgDone = round(collision.hp*0.75)
+            self.getDamage(dmgDone)
+            dmgP = damagePanel(self.rect.x, self.rect.y, dmgDone, 20, (65 + dmgDone, 0, 255 - dmgDone))
+            damages.add(dmgP)
+            collision.hp = 0
 
     def playerInput(self):
         if self.fireFlag == True:
@@ -702,6 +711,8 @@ class Game:
             self.levelSelector()
         if self.level == 'endLevelScreen':
             self.endLevelScreen()
+        if self.level == 'failScreen':
+            self.failScreen()
 
     def mainMenu(self):
         menuText = font.render("DON'T CRASH THE CAT: BACK FOR BLOOD", True, (243, 245, 156))
@@ -785,6 +796,43 @@ class Game:
             screen.blit(scoreEnd, (screen.get_width() / 2 - scoreEnd.get_width() / 2, 150))
             selectorButton = Button(image=playbuttonWide,
                                  pos=(screen.get_width() / 2, 300), text_input="Next",
+                                 font1=getFont(75), base_color=(50, 50, 50), hovering_color=(192, 152, 60))
+            quitButton = Button(image=playbuttonWide,
+                                pos=(screen.get_width() / 2, 600), text_input="QUIT",
+                                font1=getFont(75), base_color=(50, 50, 50), hovering_color=(192, 152, 60))
+            for button in [selectorButton, quitButton]:
+                button.changeColor(menuMousePos)
+                button.update(screen)
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    exit()
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if selectorButton.checkForInput(menuMousePos):
+                        self.level = 'levelSelector'
+                        isRunning = False
+                    if quitButton.checkForInput(menuMousePos):
+                        pygame.quit()
+                        exit()
+            pygame.display.flip()
+            clock.tick(60)
+
+    def failScreen(self):
+        global score
+        scoreText = str(score)
+        self.resetGame()
+        textEnd = font.render(f"YOU CRASHED THE CAT!", True, (243, 245, 156))
+        scoreEnd = font.render(scoreText, True, (243, 245, 156))
+        textEnd = pygame.transform.scale(textEnd, (textEnd.get_width() / 2, textEnd.get_height() / 2))
+        scoreEnd = pygame.transform.scale(scoreEnd, (scoreEnd.get_width() / 2, scoreEnd.get_height() / 2))
+        isRunning = True
+        while isRunning:
+            screen.fill(uiBackgroundColor)
+            menuMousePos = pygame.mouse.get_pos()
+            screen.blit(textEnd, (screen.get_width() / 2 - textEnd.get_width() / 2, 100))
+            screen.blit(scoreEnd, (screen.get_width() / 2 - scoreEnd.get_width() / 2, 150))
+            selectorButton = Button(image=playbuttonWide,
+                                 pos=(screen.get_width() / 2, 300), text_input="LEVELS",
                                  font1=getFont(75), base_color=(50, 50, 50), hovering_color=(192, 152, 60))
             quitButton = Button(image=playbuttonWide,
                                 pos=(screen.get_width() / 2, 600), text_input="QUIT",
@@ -906,6 +954,9 @@ class Game:
 
     def level01(self):
         self.currentLevel = 'level01'
+        if theCat.isAlive == False:
+            self.level = "failScreen"
+
         screen.blit(skyblock, (0, 0))
         # handling user input
         for event in pygame.event.get():
