@@ -221,8 +221,8 @@ class CAT(pygame.sprite.Sprite):
         collisions = pygame.sprite.spritecollide(self, partridgesNormal, 0, pygame.sprite.collide_mask)
         hits = []
         hits = pygame.sprite.spritecollide(self, bullets, 0, pygame.sprite.collide_mask)
-        powerupGetsDMG = []
-        powerupGetsDMG = pygame.sprite.spritecollide(self, powerupsDMG, 0, pygame.sprite.collide_mask)
+        powerupGets = []
+        powerupGets = pygame.sprite.spritecollide(self, powerupsGroup, 0, pygame.sprite.collide_mask)
         for hit in hits:
             if hit.isFriendly == False:
                 self.getDamage(hit.carryDMG)
@@ -235,9 +235,13 @@ class CAT(pygame.sprite.Sprite):
             dmgP = damagePanel(self.rect.x, self.rect.y, dmgDone, 20, (65 + dmgDone, 0, 255 - dmgDone))
             damages.add(dmgP)
             collision.hp = 0
-        for powerupGet in powerupGetsDMG:
-            self.dmgPowerup = self.dmgPowerup * powerupGet.powerupVal
-            powerupGet.kill()
+        for powerupGet in powerupGets:
+            if powerupGet.type == "DMG":
+                self.dmgPowerup = self.dmgPowerup * powerupGet.powerupVal
+                powerupGet.kill()
+            if powerupGet.type == "HP":
+                self.getHealth(powerupGet.powerupVal)
+                powerupGet.kill()
 
     def playerInput(self):
         if self.fireFlag == True:
@@ -553,9 +557,10 @@ class PerdixNormal(pygame.sprite.Sprite):
             self.kill()
         self.draw(screen)
 
-class powerupDMG(pygame.sprite.Sprite):
-    def __init__(self, x, y, value):
+class powerup(pygame.sprite.Sprite):
+    def __init__(self, x, y, value, type):
         pygame.sprite.Sprite.__init__(self)
+        self.type = type
         self.speed = 3
         self.powerupVal = value
         self.pos = (x, y)
@@ -1136,7 +1141,7 @@ class Game:
                 self.secCounter += 1
                 print(self.secCounter)
                 if self.secCounter == 1:
-                    powerupsDMG.add(powerupDMG(500, 0, 1.2))
+                    powerupsGroup.add(powerup(500, 0, 1.2, "DMG"))
                     partridgesNormal.add(PerdixNormal(0, -100, 300, 1000, 100, 2))
                     partridgesNormal.add(PerdixNormal(500, -200, 400, 1000, 100, 2))
                     partridgesNormal.add(PerdixNormal(800, -200, 500, 1000, 100, 2))
@@ -1174,7 +1179,7 @@ class Game:
         bullets.update()
         explosions.update()
         damages.update()
-        powerupsDMG.update()
+        powerupsGroup.update()
         self.scoreDisplay(score)
         pygame.display.flip()
         clock.tick(60)
@@ -1194,7 +1199,7 @@ bullets = pygame.sprite.Group()
 partridgesNormal = pygame.sprite.Group()
 explosions = pygame.sprite.Group()
 theCat = CAT((screen.get_width()/2-32, 700))
-powerupsDMG = pygame.sprite.Group()
+powerupsGroup = pygame.sprite.Group()
 game = Game()
 # Custom events
 oneSec, t = pygame.USEREVENT+1, 1000
