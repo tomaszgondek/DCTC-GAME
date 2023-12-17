@@ -302,7 +302,7 @@ class skyBlock(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.speed = 0
         self.offset = offset
-        self.image = pygame.image.load(imagePath)
+        self.image = pygame.image.load(imagePath).convert()
         self.height = self.image.get_height()
         self.panels = math.ceil(screen.get_height() / self.image.get_height()) + 2
 
@@ -1324,7 +1324,7 @@ explosions = pygame.sprite.Group()
 theCat = CAT((screen.get_width()/2-32, 700))
 powerupsGroup = pygame.sprite.Group()
 game = Game()
-Background1 = skyBlock('graphics/szerokie.png', 0.5)
+Background1 = skyBlock('graphics/tlo.png', 0.5)
 # Custom events
 oneSec, t = pygame.USEREVENT+1, 1000
 pygame.time.set_timer(oneSec, t)
