@@ -751,7 +751,7 @@ class frediKamionka(pygame.sprite.Sprite):
             if hit.isFriendly == True:
                 self.hp -= hit.carryDMG
                 hit.kill()
-                dmgP = damagePanel(self.rect.x, self.rect.y, hit.carryDMG, 20, (65 + hit.carryDMG, 0, 255 - hit.carryDMG))
+                dmgP = damagePanel(self.rect.x, self.rect.y, hit.carryDMG, 20, (min(65 + hit.carryDMG, 255), 0, max(255 - hit.carryDMG, 0)))
                 damages.add(dmgP)
 
     def moveLeftRight(self):
@@ -1236,7 +1236,7 @@ class Game:
         self.currentLevel = 'level01'
         if theCat.isAlive == False:
             self.level = "failScreen"
-        Background.update()
+        Background1.update()
         # handling user input
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -1309,7 +1309,7 @@ explosions = pygame.sprite.Group()
 theCat = CAT((screen.get_width()/2-32, 700))
 powerupsGroup = pygame.sprite.Group()
 game = Game()
-Background = skyBlock('graphics/placeholder_background.jpg', 0.5)
+Background1 = skyBlock('graphics/placeholder_background.jpg', 0.5)
 # Custom events
 oneSec, t = pygame.USEREVENT+1, 1000
 pygame.time.set_timer(oneSec, t)
