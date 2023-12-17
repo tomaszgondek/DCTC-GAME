@@ -185,8 +185,8 @@ class CAT(pygame.sprite.Sprite):
         self.shootTime += 1
         if self.currentMana > 0:
             if bulletType == 'laser' and self.shootTime >= self.laserFire and self.currentMana >= 60:
-                bullets.add(laserBullet(*(self.rect.x + 20, self.rect.y + 25), True, self.dmgPowerup))
-                bullets.add(laserBullet(*(self.rect.x + 40, self.rect.y + 25), True, self.dmgPowerup))
+                bullets.add(laserBullet(*(self.rect.x + 52, self.rect.y + 14), True, self.dmgPowerup))
+                bullets.add(laserBullet(*(self.rect.x + 74, self.rect.y + 14), True, self.dmgPowerup))
                 self.shootTime = 0
                 self.getNegMana(60 * self.ManaCostRedux)
             if bulletType == 'plasma' and self.shootTime >= self.plasmaFire and self.currentMana >= 250:
