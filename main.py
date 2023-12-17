@@ -1324,7 +1324,7 @@ explosions = pygame.sprite.Group()
 theCat = CAT((screen.get_width()/2-32, 700))
 powerupsGroup = pygame.sprite.Group()
 game = Game()
-Background1 = skyBlock('graphics/szerokie.png', 0.5)
+Background1 = skyBlock('graphics/tlo.png', 0.5)
 # Custom events
 oneSec, t = pygame.USEREVENT+1, 1000
 pygame.time.set_timer(oneSec, t)
