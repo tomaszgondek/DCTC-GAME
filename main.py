@@ -582,7 +582,7 @@ class PerdixNormal(pygame.sprite.Sprite):
         surface.blit(self.image, (self.rect.x, self.rect.y))
 
     def update(self):
-        anim = 12
+        anim = random.randrange(10, 12)
         self.counter += 1
         if self.counter >= anim and self.switch == 0:
             self.switch = 1
