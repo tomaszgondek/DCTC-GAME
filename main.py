@@ -526,21 +526,27 @@ class sniperBulletv2(pygame.sprite.Sprite):
 class PerdixNormal(pygame.sprite.Sprite):
     def __init__(self, x, y, tx, ty, scale, speed):
         pygame.sprite.Sprite.__init__(self)
+        self.index = 0
         self.pos = (x, y)
         self.target = (tx, ty)
         self.angle = self.getAngle(self.pos, self.target)
-        self.image = pygame.image.load('graphics/placeholder_duck.png').convert_alpha()
-        self.image = pygame.transform.scale(self.image, (scale, scale))
-        self.rect = self.image.get_rect()
+        self.images = []
+        for i in range(1, 3):
+            img = pygame.image.load(f"graphics/partridge/{i}.png").convert_alpha()
+            img = pygame.transform.flip(img, False, True)
+            img = pygame.transform.scale_by(img, 2)
+            img = pygame.transform.rotate(img, -1 * math.degrees(self.angle) - 90)
+            img = pygame.transform.flip(img, 1, 0)
+            self.images.append(img)
+        self.rect = self.images[self.index].get_rect()
         self.rect.center = (x, y)
-        # self.x_speed = speed * random.random()
-        # self.y_speed = speed
         self.speed = speed
         self.hp = 100
-        self.image = pygame.transform.rotate(self.image, -1 * math.degrees(self.angle) - 90)
-        self.image = pygame.transform.flip(self.image, 1, 0)
+        self.image = self.images[self.index]
         self.carryDMG = 20
-        self.mask = pygame.mask.from_surface(self.image)
+        self.mask = pygame.mask.from_surface(self.images[self.index])
+        self.counter = 0
+        self.switch = 0
 
     def checkColisions(self):
         hits = []
@@ -576,6 +582,16 @@ class PerdixNormal(pygame.sprite.Sprite):
         surface.blit(self.image, (self.rect.x, self.rect.y))
 
     def update(self):
+        anim = 12
+        self.counter += 1
+        if self.counter >= anim and self.switch == 0:
+            self.switch = 1
+            self.image = self.images[0]
+            self.counter = 0
+        if self.counter >= anim and self.switch == 1:
+            self.switch = 0
+            self.image = self.images[1]
+            self.counter = 0
         self.checkColisions()
         if self.rect.y > screen.get_height():
             self.kill()
