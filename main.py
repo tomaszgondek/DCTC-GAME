@@ -22,6 +22,7 @@ with open('save/levels.txt') as f:
 skyblock = pygame.image.load('graphics/placeholder_background.jpg').convert()
 playbuttonWide = pygame.image.load('graphics/PLAYBUTTON.jpg')
 playbuttonWide = pygame.transform.scale(playbuttonWide, (400, 150))
+playbuttonSmall = pygame.image.load('graphics/PLAYBUTTON_SMALL.jpg')
 # story
 # intro
 # 1st
@@ -860,6 +861,10 @@ class Game:
         self.introScene = 1
         self.levelIntroDone = int(saveState[0])
         self.level01Done = int(saveState[1])
+        self.level02Done = int(saveState[2])
+        self.level03Done = int(saveState[3])
+        self.level04Done = int(saveState[4])
+        self.level05Done = int(saveState[4])
         self.currentLevel = self.level
         self.secCounter = 0
         self.score = 0
@@ -879,7 +884,9 @@ class Game:
         if self.level == 'pause':
             self.pause()
         if self.level == 'levelSelector':
-            self.levelSelector()
+            self.levelSelectorP1()
+        if self.level == 'levelSelectorP2':
+            self.levelSelectorP2()
         if self.level == 'endLevelScreen':
             self.endLevelScreen()
         if self.level == 'failScreen':
@@ -1026,36 +1033,56 @@ class Game:
             clock.tick(60)
 
 
-    def levelSelector(self):
+    def levelSelectorP1(self):
         menuText = font.render("LEVELS:", True, (243, 245, 156))
         menuText = pygame.transform.scale(menuText, (menuText.get_width() / 2, menuText.get_height() / 2))
+        pageNum = 1
         isRunning = True
         while isRunning:
             screen.fill(uiBackgroundColor)
             menuMousePos = pygame.mouse.get_pos()
             menuRect = menuText.get_rect(center=(screen.get_width()/2, 300))
+            pageButton = Button(image=playbuttonSmall,
+                                 pos=(screen.get_width() / 2 + 300, screen.get_height() / 2 - 50), text_input=">",
+                                 font1=getFont(75), base_color=(50, 50, 50), hovering_color=(192, 152, 60))
             if self.levelIntroDone == True:
-                introButton = Button(image=playbuttonWide,
-                                    pos=(screen.get_width()/2, 150), text_input="Intro",
+                introButton = Button(image=playbuttonSmall,
+                                    pos=(screen.get_width()/2 - 100, 250), text_input="00",
                                     font1=getFont(75), base_color=(50, 85, 50), hovering_color=(192, 152, 60))
             else:
-                introButton = Button(image=playbuttonWide,
-                                     pos=(screen.get_width() / 2, 150), text_input="Intro",
+                introButton = Button(image=playbuttonSmall,
+                                     pos=(screen.get_width() / 2, 250), text_input="00",
                                      font1=getFont(75), base_color=(50, 50, 50), hovering_color=(192, 152, 60))
             if self.level01Done:
-                level01Button = Button(image=playbuttonWide,
-                                       pos=(screen.get_width() / 2, 350), text_input="Level 01",
+                level01Button = Button(image=playbuttonSmall,
+                                       pos=(screen.get_width() / 2 + 100, 250), text_input="01",
                                        font1=getFont(75), base_color=(50, 85, 50), hovering_color=(192, 152, 60))
             else:
-                level01Button = Button(image=playbuttonWide,
-                                       pos=(screen.get_width() / 2, 350), text_input="Level 01",
+                level01Button = Button(image=playbuttonSmall,
+                                       pos=(screen.get_width() / 2 + 100, 250), text_input="01",
+                                       font1=getFont(75), base_color=(50, 50, 50), hovering_color=(192, 152, 60))
+            if self.level02Done:
+                level02Button = Button(image=playbuttonSmall,
+                                       pos=(screen.get_width() / 2 - 100, 450), text_input="02",
+                                       font1=getFont(75), base_color=(50, 85, 50), hovering_color=(192, 152, 60))
+            else:
+                level02Button = Button(image=playbuttonSmall,
+                                       pos=(screen.get_width() / 2 - 100, 450), text_input="02",
+                                       font1=getFont(75), base_color=(50, 50, 50), hovering_color=(192, 152, 60))
+            if self.level03Done:
+                level03Button = Button(image=playbuttonSmall,
+                                       pos=(screen.get_width() / 2 + 100, 450), text_input="03",
+                                       font1=getFont(75), base_color=(50, 85, 50), hovering_color=(192, 152, 60))
+            else:
+                level03Button = Button(image=playbuttonSmall,
+                                       pos=(screen.get_width() / 2 + 100, 450), text_input="03",
                                        font1=getFont(75), base_color=(50, 50, 50), hovering_color=(192, 152, 60))
             quitButton = Button(image=playbuttonWide,
-                                pos=(screen.get_width() / 2, 550), text_input="QUIT",
+                                pos=(screen.get_width() / 2, 650), text_input="QUIT",
                                 font1=getFont(75), base_color=(50, 50, 50), hovering_color=(192, 152, 60))
 
             screen.blit(menuText, (screen.get_width()/2 - menuText.get_width()/2, 100))
-            for button in [introButton, level01Button, quitButton]:
+            for button in [introButton, level01Button, level02Button, level03Button, pageButton, quitButton]:
                 button.changeColor(menuMousePos)
                 button.update(screen)
             for event in pygame.event.get():
@@ -1068,6 +1095,71 @@ class Game:
                         isRunning = False
                     if level01Button.checkForInput(menuMousePos) and self.levelIntroDone:
                         self.level = 'level01'
+                        isRunning = False
+                    if level02Button.checkForInput(menuMousePos) and self.level01Done:
+                        self.level = 'level02'
+                        isRunning = False
+                    if level03Button.checkForInput(menuMousePos) and self.level02Done:
+                        self.level = 'level03'
+                        isRunning = False
+                    if pageButton.checkForInput(menuMousePos):
+                        self.level = 'levelSelectorP2'
+                        isRunning = False
+                    if quitButton.checkForInput(menuMousePos):
+                        pygame.quit()
+                        exit()
+            pygame.display.flip()
+            clock.tick(60)
+
+    def levelSelectorP2(self):
+        menuText = font.render("LEVELS:", True, (243, 245, 156))
+        menuText = pygame.transform.scale(menuText, (menuText.get_width() / 2, menuText.get_height() / 2))
+        pageNum = 1
+        isRunning = True
+        while isRunning:
+            screen.fill(uiBackgroundColor)
+            menuMousePos = pygame.mouse.get_pos()
+            menuRect = menuText.get_rect(center=(screen.get_width()/2, 300))
+            pageButton = Button(image=playbuttonSmall,
+                                pos=(screen.get_width() / 2 - 300, screen.get_height() / 2 - 50), text_input="<",
+                                font1=getFont(75), base_color=(50, 50, 50), hovering_color=(192, 152, 60))
+            if self.level04Done == True:
+                level04Button = Button(image=playbuttonSmall,
+                                    pos=(screen.get_width()/2 - 100, 250), text_input="04",
+                                    font1=getFont(75), base_color=(50, 85, 50), hovering_color=(192, 152, 60))
+            else:
+                level04Button = Button(image=playbuttonSmall,
+                                     pos=(screen.get_width() / 2 - 100, 250), text_input="04",
+                                     font1=getFont(75), base_color=(50, 50, 50), hovering_color=(192, 152, 60))
+            if self.level05Done:
+                level05Button = Button(image=playbuttonSmall,
+                                       pos=(screen.get_width() / 2 + 100, 250), text_input="05",
+                                       font1=getFont(75), base_color=(50, 85, 50), hovering_color=(192, 152, 60))
+            else:
+                level05Button = Button(image=playbuttonSmall,
+                                       pos=(screen.get_width() / 2 + 100, 250), text_input="05",
+                                       font1=getFont(75), base_color=(50, 50, 50), hovering_color=(192, 152, 60))
+            quitButton = Button(image=playbuttonWide,
+                                pos=(screen.get_width() / 2, 650), text_input="QUIT",
+                                font1=getFont(75), base_color=(50, 50, 50), hovering_color=(192, 152, 60))
+
+            screen.blit(menuText, (screen.get_width()/2 - menuText.get_width()/2, 100))
+            for button in [level04Button, level05Button, quitButton, pageButton]:
+                button.changeColor(menuMousePos)
+                button.update(screen)
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    exit()
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if level04Button.checkForInput(menuMousePos) and self.level03Done:
+                        self.level = 'level04'
+                        isRunning = False
+                    if level05Button.checkForInput(menuMousePos) and self.level04Done:
+                        self.level = 'level05'
+                        isRunning = False
+                    if pageButton.checkForInput(menuMousePos):
+                        self.level = 'levelSelector'
                         isRunning = False
                     if quitButton.checkForInput(menuMousePos):
                         pygame.quit()
