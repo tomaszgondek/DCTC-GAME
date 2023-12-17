@@ -304,14 +304,14 @@ class skyBlock(pygame.sprite.Sprite):
         self.offset = offset
         self.image = pygame.image.load(imagePath)
         self.height = self.image.get_height()
-        self.pos = (0, 0)
-        self.panels = math.ceil(screen.get_height() / 2) + 2
-        self.rect = self.image.get_rect()
+        self.panels = math.ceil(screen.get_height() / self.image.get_height()) + 2
 
     def update(self):
         self.speed += self.offset
+        if abs(self.speed) > self.image.get_height():
+            self.speed = 0
         for i in range (self.panels):
-            screen.blit(self.image, (0, i * self.height - self.speed - self.height))
+            screen.blit(self.image, (0, i * self.height + self.speed - self.height))
 
 
 class laserBullet(pygame.sprite.Sprite):
@@ -1324,7 +1324,7 @@ explosions = pygame.sprite.Group()
 theCat = CAT((screen.get_width()/2-32, 700))
 powerupsGroup = pygame.sprite.Group()
 game = Game()
-Background1 = skyBlock('graphics/placeholder_background.jpg', 0.5)
+Background1 = skyBlock('graphics/szerokie.png', 0.5)
 # Custom events
 oneSec, t = pygame.USEREVENT+1, 1000
 pygame.time.set_timer(oneSec, t)
