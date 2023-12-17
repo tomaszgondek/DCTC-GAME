@@ -122,7 +122,6 @@ class CAT(pygame.sprite.Sprite):
         self.counter = 0
 
     def reset(self):
-        self.image = pygame.image.load('graphics/pngegg.png').convert_alpha()
         self.rect = self.image.get_rect(midbottom=(64, 64))
         self.rect.center = self.initPos
         self.dmgPowerup = 1
@@ -330,7 +329,7 @@ class laserBullet(pygame.sprite.Sprite):
         else:
             self.dir = (self.dir[0]/length, self.dir[1]/length)
         angle = math.degrees(math.atan2(-self.dir[1], self.dir[0]))
-        self.bullet = pygame.image.load('graphics/bullets/Laser_Sprites/14.png')
+        self.bullet = pygame.image.load('graphics/bullets/Laser_Sprites/14.png').convert_alpha()
         self.bullet = pygame.transform.scale(self.bullet, (32, 32))
         self.bullet = pygame.transform.rotate(self.bullet, angle)
         self.speed = 20
@@ -367,7 +366,7 @@ class plasmaBullet(pygame.sprite.Sprite):
         else:
             self.dir = (self.dir[0]/length, self.dir[1]/length)
         angle = math.degrees(math.atan2(-self.dir[1], self.dir[0]))
-        self.bullet = pygame.image.load('graphics/bullets/Laser_Sprites/27.png')
+        self.bullet = pygame.image.load('graphics/bullets/Laser_Sprites/27.png').convert_alpha()
         self.bullet = pygame.transform.scale(self.bullet, (100, 150))
         self.bullet = pygame.transform.rotate(self.bullet, angle)
         self.speed = speed
@@ -404,7 +403,7 @@ class plasmaBulletv2(pygame.sprite.Sprite):
         else:
             self.dir = (self.dir[0]/length, self.dir[1]/length)
         angle = math.degrees(math.atan2(-self.dir[1], self.dir[0]))
-        self.bullet = pygame.image.load('graphics/bullets/Laser_Sprites/51.png')
+        self.bullet = pygame.image.load('graphics/bullets/Laser_Sprites/51.png').convert_alpha()
         self.bullet = pygame.transform.scale(self.bullet, (100, 150))
         self.bullet = pygame.transform.rotate(self.bullet, angle)
         self.speed = speed
@@ -439,7 +438,7 @@ class shotgutBullet(pygame.sprite.Sprite):
         else:
             self.dir = (self.dir[0]/length, self.dir[1]/length)
         angle = math.degrees(math.atan2(-self.dir[1], self.dir[0]))
-        self.bullet = pygame.image.load('graphics/bullets/Laser_Sprites/07.png')
+        self.bullet = pygame.image.load('graphics/bullets/Laser_Sprites/07.png').convert_alpha()
         self.bullet = pygame.transform.scale(self.bullet, (50, 50))
         self.bullet = pygame.transform.rotate(self.bullet, angle)
         self.speed = 30
@@ -472,7 +471,7 @@ class sniperBullet(pygame.sprite.Sprite):
         else:
             self.dir = (self.dir[0]/length, self.dir[1]/length)
         angle = math.degrees(math.atan2(-self.dir[1], self.dir[0]))
-        self.bullet = pygame.image.load('graphics/bullets/Laser_Sprites/03.png')
+        self.bullet = pygame.image.load('graphics/bullets/Laser_Sprites/03.png').convert_alpha()
         self.bullet = pygame.transform.scale(self.bullet, (200, 32))
         self.bullet = pygame.transform.rotate(self.bullet, angle)
         self.speed = 20
@@ -505,7 +504,7 @@ class sniperBulletv2(pygame.sprite.Sprite):
         else:
             self.dir = (self.dir[0]/length, self.dir[1]/length)
         angle = math.degrees(math.atan2(-self.dir[1], self.dir[0]))
-        self.bullet = pygame.image.load('graphics/bullets/Laser_Sprites/10.png')
+        self.bullet = pygame.image.load('graphics/bullets/Laser_Sprites/10.png').convert_alpha()
         self.bullet = pygame.transform.scale(self.bullet, (200, 50))
         self.bullet = pygame.transform.rotate(self.bullet, angle)
         self.speed = 20
@@ -530,7 +529,7 @@ class PerdixNormal(pygame.sprite.Sprite):
         self.pos = (x, y)
         self.target = (tx, ty)
         self.angle = self.getAngle(self.pos, self.target)
-        self.image = pygame.image.load('graphics/placeholder_duck.png')
+        self.image = pygame.image.load('graphics/placeholder_duck.png').convert_alpha()
         self.image = pygame.transform.scale(self.image, (scale, scale))
         self.rect = self.image.get_rect()
         self.rect.center = (x, y)
@@ -598,7 +597,7 @@ class powerup(pygame.sprite.Sprite):
         self.powerupVal = value
         self.pos = (x, y)
         self.target = (x, 2000)
-        self.image = pygame.image.load('graphics/fredi.jpg')
+        self.image = pygame.image.load('graphics/fredi.jpg').convert_alpha()
         self.image = pygame.transform.scale(self.image, (100, 100))
         self.rect = self.image.get_rect()
         self.rect.center = (x, y)
@@ -620,7 +619,7 @@ class PerdixShooter(pygame.sprite.Sprite):
     def __init__(self, x, y, scale, speed):
         pygame.sprite.Sprite.__init__(self)
         self.pos = (x, y)
-        self.image = pygame.image.load('graphics/placeholder_duck.png')
+        self.image = pygame.image.load('graphics/placeholder_duck.png').convert_alpha()
         self.image = pygame.transform.scale(self.image, (scale, scale))
         self.rect = self.image.get_rect()
         self.rect.center = (x, y)
@@ -682,7 +681,7 @@ class PerdixSniper(pygame.sprite.Sprite):
     def __init__(self, x, y, scale, speed, targetX, targetY):
         pygame.sprite.Sprite.__init__(self)
         self.pos = (x, y)
-        self.image = pygame.image.load('graphics/placeholder_duck.png')
+        self.image = pygame.image.load('graphics/placeholder_duck.png').convert_alpha()
         self.image = pygame.transform.scale(self.image, (scale, scale))
         self.rect = self.image.get_rect()
         self.rect.center = (x, y)
@@ -746,7 +745,7 @@ class frediKamionka(pygame.sprite.Sprite):
     def __init__(self, x, y, scale, speed, targetX, targetY):
         pygame.sprite.Sprite.__init__(self)
         self.pos = (x, y)
-        self.image = pygame.image.load('graphics/fredi.jpg')
+        self.image = pygame.image.load('graphics/fredi.jpg').convert_alpha()
         self.image = pygame.transform.scale(self.image, (scale, scale))
         self.rect = self.image.get_rect()
         self.rect.center = (x, y)
@@ -833,7 +832,7 @@ class Explosion2Firework(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.images = []
         for num in range(1, 20):
-            img = pygame.image.load(f"graphics/PixelSimulations/Explosion2/{num}.png")
+            img = pygame.image.load(f"graphics/PixelSimulations/Explosion2/{num}.png").convert_alpha()
             img = pygame.transform.scale(img, (scale, scale))
             self.images.append(img)
         self.index = 0
