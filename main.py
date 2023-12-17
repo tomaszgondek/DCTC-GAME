@@ -89,7 +89,13 @@ def blit_text(surface, text, pos, font, color=pygame.Color('black')):
 class CAT(pygame.sprite.Sprite):
     def __init__(self, pos):
         super(CAT, self).__init__()
-        self.image = pygame.image.load('graphics/pngegg.png').convert_alpha()
+        self.images = []
+        for i in range(1, 6):
+            img = pygame.image.load(f"graphics/manul/{i}.png").convert_alpha()
+            img = pygame.transform.scale_by(img, 2)
+            self.images.append(img)
+        self.index = 0
+        self.image = self.images[self.index]
         self.rect = self.image.get_rect(midbottom=(64, 64))
         self.rect.center = pos
         self.initPos = pos
@@ -113,6 +119,7 @@ class CAT(pygame.sprite.Sprite):
         self.fireCycle = 1
         self.fireFlag = False
         self.ManaCostRedux = 1
+        self.counter = 0
 
     def reset(self):
         self.image = pygame.image.load('graphics/pngegg.png').convert_alpha()
@@ -138,7 +145,6 @@ class CAT(pygame.sprite.Sprite):
         self.fireCycle = 1
         self.fireFlag = False
         self.ManaCostRedux = 1
-
 
 
     def getDamage(self, amount):
@@ -179,8 +185,8 @@ class CAT(pygame.sprite.Sprite):
         self.shootTime += 1
         if self.currentMana > 0:
             if bulletType == 'laser' and self.shootTime >= self.laserFire and self.currentMana >= 60:
-                bullets.add(laserBullet(*(self.rect.x + 20, self.rect.y + 25), True, self.dmgPowerup))
-                bullets.add(laserBullet(*(self.rect.x + 40, self.rect.y + 25), True, self.dmgPowerup))
+                bullets.add(laserBullet(*(self.rect.x + 52, self.rect.y + 14), True, self.dmgPowerup))
+                bullets.add(laserBullet(*(self.rect.x + 74, self.rect.y + 14), True, self.dmgPowerup))
                 self.shootTime = 0
                 self.getNegMana(60 * self.ManaCostRedux)
             if bulletType == 'plasma' and self.shootTime >= self.plasmaFire and self.currentMana >= 250:
@@ -275,12 +281,21 @@ class CAT(pygame.sprite.Sprite):
 
 
     def updateSprite(self, surface):
+        anim = 6
+        self.counter += 1
+        if self.counter >= anim and self.index < len(self.images) - 1:
+            self.counter = 0
+            self.index += 1
+            self.image = self.images[self.index]
+        if self.index >= len(self.images) - 1 and self.counter >= anim:
+            self.index = 0
+            self.image = self.images[self.index]
+        self.draw(screen)
         self.checkColisions()
         self.hpBar()
         self.getMana(3)
         self.manaBar()
         self.playerInput()
-        self.draw(surface)
 
 class skyBlock(pygame.sprite.Sprite):
     def __init__(self, imagePath, offset):
@@ -1282,13 +1297,13 @@ class Game:
                     self.level = 'pause'
                 if event.key == pygame.K_t:
                     self.level = 'endLevelScreen'
-        theCat.updateSprite(screen)
         partridgesNormal.update()
         bullets.update()
         explosions.update()
         damages.update()
         powerupsGroup.update()
         self.scoreDisplay(score)
+        theCat.updateSprite(screen)
         pygame.display.flip()
         clock.tick(60)
 
