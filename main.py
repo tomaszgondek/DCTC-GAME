@@ -282,6 +282,23 @@ class CAT(pygame.sprite.Sprite):
         self.playerInput()
         self.draw(surface)
 
+class skyBlock(pygame.sprite.Sprite):
+    def __init__(self, imagePath, offset):
+        pygame.sprite.Sprite.__init__(self)
+        self.speed = 0
+        self.offset = offset
+        self.image = pygame.image.load(imagePath)
+        self.height = self.image.get_height()
+        self.pos = (0, 0)
+        self.panels = math.ceil(screen.get_height() / 2) + 2
+        self.rect = self.image.get_rect()
+
+    def update(self):
+        self.speed += self.offset
+        for i in range (self.panels):
+            screen.blit(self.image, (0, i * self.height - self.speed - self.height))
+
+
 class laserBullet(pygame.sprite.Sprite):
     def __init__(self, x, y, isFriendly, dmgIncrease):
         pygame.sprite.Sprite.__init__(self)
@@ -1219,8 +1236,7 @@ class Game:
         self.currentLevel = 'level01'
         if theCat.isAlive == False:
             self.level = "failScreen"
-
-        screen.blit(skyblock, (0, 0))
+        Background.update()
         # handling user input
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -1293,6 +1309,7 @@ explosions = pygame.sprite.Group()
 theCat = CAT((screen.get_width()/2-32, 700))
 powerupsGroup = pygame.sprite.Group()
 game = Game()
+Background = skyBlock('graphics/placeholder_background.jpg', 0.5)
 # Custom events
 oneSec, t = pygame.USEREVENT+1, 1000
 pygame.time.set_timer(oneSec, t)
