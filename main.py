@@ -9,14 +9,9 @@ clock = pygame.time.Clock()
 pygame.display.set_caption("Don't Crash the cat: Back for Blood")
 score = 0
 secCounter = 0
-saveState = []
+
 uiBackgroundColor = (37, 0, 46)
-with open('save/levels.txt') as f:
-    while True:
-        levelSave = f.readline()
-        saveState.append(levelSave.strip())
-        if not levelSave:
-            break
+
 
 # static graphics load
 skyblock = pygame.image.load('graphics/placeholder_background.jpg').convert()
@@ -85,6 +80,9 @@ def blit_text(surface, text, pos, font, color=pygame.Color('black')):
             x += word_width + space
         x = pos[0]  # Reset the x.
         y += word_height  # Start on new row.
+
+
+
 
 class CAT(pygame.sprite.Sprite):
     def __init__(self, pos):
@@ -905,16 +903,35 @@ class Button:
 class Game:
     def __init__(self):
         self.level = 'menu'
+        self.saveState = []
+        with open('save/levels.txt') as f:
+            while True:
+                levelSave = f.readline()
+                self.saveState.append(levelSave.strip())
+                if not levelSave:
+                    break
+        f.close()
         self.introScene = 1
-        self.levelIntroDone = int(saveState[0])
-        self.level01Done = int(saveState[1])
-        self.level02Done = int(saveState[2])
-        self.level03Done = int(saveState[3])
-        self.level04Done = int(saveState[4])
-        self.level05Done = int(saveState[4])
+        self.levelIntroDone = int(self.saveState[0])
+        self.level01Done = int(self.saveState[1])
+        self.level02Done = int(self.saveState[2])
+        self.level03Done = int(self.saveState[3])
+        self.level04Done = int(self.saveState[4])
+        self.level05Done = int(self.saveState[5])
         self.currentLevel = self.level
         self.secCounter = 0
         self.score = 0
+
+    def saveHandler(self):
+        with open('save/levels.txt') as f:
+            f.write(f"{self.levelIntroDone}\n")
+            f.write(f"{self.level01Done}\n")
+            f.write(f"{self.level02Done}\n")
+            f.write(f"{self.level03Done}\n")
+            f.write(f"{self.level04Done}\n")
+            f.write(f"{self.level05Done}\n")
+        f.close()
+
 
     def scoreDisplay(self, score):
         scoreImg = font.render(f"SCORE: {score}", True, (0, 0, 100))
@@ -1254,10 +1271,7 @@ class Game:
             screen.blit(text9, (screen.get_width() / 2 - text9.get_width() / 2, 700))
         if self.introScene == 10:
             self.levelIntroDone = True
-            saveState[0] = 1
-            f = open('save/levels.txt', 'w')
-            f.writelines(['1\n', '0\n', '0\n', '0\n', '0\n'])
-            f.close()
+            self.saveHandler()
             self.level = 'levelSelector'
         pygame.display.flip()
         clock.tick(60)
