@@ -1343,6 +1343,8 @@ class Game:
         partridgesNormal.empty()
         bullets.empty()
         theCat.reset()
+        explosions.empty()
+        powerupsGroup.empty()
 
 
 # Sprite group initialisation
