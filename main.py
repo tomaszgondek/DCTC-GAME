@@ -923,13 +923,13 @@ class Game:
         self.score = 0
 
     def saveHandler(self):
-        with open('save/levels.txt') as f:
-            f.write(f"{self.levelIntroDone}\n")
-            f.write(f"{self.level01Done}\n")
-            f.write(f"{self.level02Done}\n")
-            f.write(f"{self.level03Done}\n")
-            f.write(f"{self.level04Done}\n")
-            f.write(f"{self.level05Done}\n")
+        with open('save/levels.txt', 'w') as f:
+            f.write(f"{int(self.levelIntroDone)}\n")
+            f.write(f"{int(self.level01Done)}\n")
+            f.write(f"{int(self.level02Done)}\n")
+            f.write(f"{int(self.level03Done)}\n")
+            f.write(f"{int(self.level04Done)}\n")
+            f.write(f"{int(self.level05Done)}\n")
         f.close()
 
 
