@@ -519,7 +519,7 @@ class sniperBulletv2(pygame.sprite.Sprite):
         if self.pos[0] > screen.get_width() or self.pos[0] < 0 or self.pos[1] > screen.get_height() or self.pos[1] < 0:
             self.kill()
 
-class hellBullet(pygame.sprite.Sprite):
+class hellBulletWobbly(pygame.sprite.Sprite):
     def __init__(self, x, y, isFriendly, givenAngle):
         pygame.sprite.Sprite.__init__(self)
         self.sAngle = givenAngle
@@ -566,7 +566,7 @@ class hellBullet(pygame.sprite.Sprite):
         if self.pos[0] > screen.get_width() or self.pos[0] < 0 or self.pos[1] > screen.get_height() or self.pos[1] < 0:
             self.kill()
 
-class hellBulletv2(pygame.sprite.Sprite):
+class hellBulletRing(pygame.sprite.Sprite):
     def __init__(self, x, y, isFriendly, givenAngle):
         pygame.sprite.Sprite.__init__(self)
         self.sAngle = givenAngle
@@ -891,12 +891,12 @@ class frediKamionka(pygame.sprite.Sprite):
 
     def bulletHell(self, offset):
         for i in range(0, 7):
-            bullet = hellBullet(self.rect.centerx, self.rect.centery, False, (60 * i) + offset)
+            bullet = hellBulletWobbly(self.rect.centerx, self.rect.centery, False, (60 * i) + offset)
             bullets.add(bullet)
 
     def bulletHellv2(self):
         for i in range(0, 37):
-            bullet = hellBulletv2(self.rect.centerx, self.rect.centery, False, (10 * i))
+            bullet = hellBulletRing(self.rect.centerx, self.rect.centery, False, (10 * i))
             bullets.add(bullet)
 
 
