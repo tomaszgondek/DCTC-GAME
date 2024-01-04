@@ -614,7 +614,7 @@ class PerdixNormal(pygame.sprite.Sprite):
         for i in range(1, 3):
             img = pygame.image.load(f"graphics/partridge/{i}.png").convert_alpha()
             img = pygame.transform.flip(img, False, True)
-            img = pygame.transform.scale_by(img, 2)
+            img = pygame.transform.scale_by(img, scale)
             img = pygame.transform.rotate(img, -1 * math.degrees(self.angle) - 90)
             img = pygame.transform.flip(img, 1, 0)
             self.images.append(img)
@@ -1063,6 +1063,8 @@ class Game:
             self.intro()
         if self.level == 'level01':
             self.level01()
+        if self.level == 'level02':
+            self.level02()
         if self.level == 'pause':
             self.pause()
         if self.level == 'levelSelector':
@@ -1233,7 +1235,7 @@ class Game:
                                     font1=getFont(75), base_color=(50, 85, 50), hovering_color=(192, 152, 60))
             else:
                 introButton = Button(image=playbuttonSmall,
-                                     pos=(screen.get_width() / 2, 250), text_input="00",
+                                     pos=(screen.get_width()/2 - 100, 250), text_input="00",
                                      font1=getFont(75), base_color=(50, 50, 50), hovering_color=(192, 152, 60))
             if self.level01Done:
                 level01Button = Button(image=playbuttonSmall,
@@ -1413,7 +1415,10 @@ class Game:
                 if self.secCounter == 1:
                     powerupsGroup.add(powerup(500, 0, 1.2, "DMG"))
                     partridgesNormal.add(frediKamionka(-100, 200, 400, 3, theCat.rect.x, theCat.rect.y))
-                    partridgesNormal.add(PerdixNormal(0, -100, 300, 1000, 100, 2))
+                    partridgesNormal.add(PerdixNormal(0, -100, 300, 1000, 2, 2))
+                    chuj = PerdixNormal(0, -100, 300, 1000, 3, 4)
+                    chuj.hp = 1000
+                    partridgesNormal.add(chuj)
                 if self.secCounter == 8:
                     partridgesNormal.add(PerdixShooter(-100, 200, 100, 3))
                     partridgesNormal.add(PerdixShooter(1300, 100, 100, 3))
