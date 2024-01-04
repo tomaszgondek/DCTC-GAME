@@ -557,10 +557,45 @@ class hellBullet(pygame.sprite.Sprite):
         if self.speed <= 1:
             self.toggle = True
 
-
-
     def update(self):
         self.bulletSpeed()
+        self.pos = (self.pos[0] + self.dir[0] * self.speed,
+                    self.pos[1] + self.dir[1] * self.speed)
+        self.rect.move_ip(0,5)
+        self.draw(screen)
+        if self.pos[0] > screen.get_width() or self.pos[0] < 0 or self.pos[1] > screen.get_height() or self.pos[1] < 0:
+            self.kill()
+
+class hellBulletv2(pygame.sprite.Sprite):
+    def __init__(self, x, y, isFriendly, givenAngle):
+        pygame.sprite.Sprite.__init__(self)
+        self.sAngle = givenAngle
+        self.carryDMG = 10
+        self.isFriendly = isFriendly
+        self.pos = (x, y)
+        mx = math.cos(math.degrees(self.sAngle))
+        my = math.sin(math.degrees(self.sAngle))
+        self.dir = (mx, my)
+        length = math.hypot(*self.dir)
+        if length == 0.0:
+            self.dir = (0, -1)
+        else:
+            self.dir = (self.dir[0]/length, self.dir[1]/length)
+        angle = math.degrees(math.atan2(-self.dir[1], self.dir[0]))
+        self.bullet = pygame.image.load('graphics/bullets/Laser_Sprites/19.png').convert_alpha()
+        self.bullet = pygame.transform.scale(self.bullet, (64, 64))
+        self.bullet = pygame.transform.rotate(self.bullet, angle)
+        self.speed = 10
+        self.rect = self.bullet.get_rect()
+        self.mask = pygame.mask.from_surface(self.bullet)
+        self.toggle = False
+
+    def draw(self, surf):
+        self.rect = self.bullet.get_rect(center=self.pos)
+        surf.blit(self.bullet, self.rect)
+
+    def update(self):
+
         self.pos = (self.pos[0] + self.dir[0] * self.speed,
                     self.pos[1] + self.dir[1] * self.speed)
         self.rect.move_ip(0,5)
@@ -816,10 +851,12 @@ class frediKamionka(pygame.sprite.Sprite):
         self.Toggle = False
         self.fireRatePlasma = 50
         self.fireRateSniper = 100
+        self.fireRateHellv2 = 150
         self.fireRateHell = 10
         self.fireTickPlasma = 0
         self.fireTickSniper = 0
         self.fireTickHell = 0
+        self.fireTickHellv2 = 0
         self.hellOffset = 0
         self.mask = pygame.mask.from_surface(self.image)
         self.target = (targetX, targetY)
@@ -857,12 +894,17 @@ class frediKamionka(pygame.sprite.Sprite):
             bullet = hellBullet(self.rect.centerx, self.rect.centery, False, (60 * i) + offset)
             bullets.add(bullet)
 
+    def bulletHellv2(self):
+        for i in range(0, 37):
+            bullet = hellBulletv2(self.rect.centerx, self.rect.centery, False, (10 * i))
+            bullets.add(bullet)
+
 
     def shoot(self):
         self.fireTickPlasma += 1
         self.fireTickSniper += 1
         self.fireTickHell += 1
-
+        self.fireTickHellv2 += 1
         if self.fireTickPlasma >= self.fireRatePlasma:
             self.shootPlasma()
             self.fireTickPlasma = 0
@@ -873,6 +915,9 @@ class frediKamionka(pygame.sprite.Sprite):
             self.bulletHell(self.hellOffset)
             self.hellOffset += 1
             self.fireTickHell = 0
+        if self.fireTickHellv2 >= self.fireRateHellv2:
+            self.bulletHellv2()
+            self.fireTickHellv2 = 0
 
 
 
