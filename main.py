@@ -536,7 +536,7 @@ class hellBullet(pygame.sprite.Sprite):
             self.dir = (self.dir[0]/length, self.dir[1]/length)
         angle = math.degrees(math.atan2(-self.dir[1], self.dir[0]))
         self.bullet = pygame.image.load('graphics/bullets/Laser_Sprites/04.png').convert_alpha()
-        self.bullet = pygame.transform.scale(self.bullet, (200, 32))
+        self.bullet = pygame.transform.scale(self.bullet, (100, 50))
         self.bullet = pygame.transform.rotate(self.bullet, angle)
         self.speed = 10
         self.rect = self.bullet.get_rect()
@@ -552,7 +552,7 @@ class hellBullet(pygame.sprite.Sprite):
             self.speed -= 1
         elif self.toggle == True:
             self.speed += 1
-        if self.speed >= 25:
+        if self.speed >= 20:
             self.toggle = False
         if self.speed <= 1:
             self.toggle = True
@@ -909,7 +909,6 @@ class frediKamionka(pygame.sprite.Sprite):
             self.shootPlasma()
             self.fireTickPlasma = 0
         if self.fireTickSniper >= self.fireRateSniper:
-            self.shootSniper()
             self.fireTickSniper = 0
         if self.fireTickHell >= self.fireRateHell:
             self.bulletHell(self.hellOffset)
@@ -1419,11 +1418,11 @@ class Game:
                     partridgesNormal.add(PerdixShooter(-100, 200, 100, 3))
                     partridgesNormal.add(PerdixShooter(1300, 100, 100, 3))
                 if self.secCounter == 10:
-                    for x in range(10):
+                    for x in range(3):
                         partridgesNormal.add(PerdixNormal(random.randrange(0, 1200), random.randrange(100, 800) * -1,
                                                           random.randrange(0, 1200), 1000, 100, random.randrange(2, 3)))
                 if self.secCounter == 12:
-                    for x in range(13):
+                    for x in range(4):
                         partridgesNormal.add(PerdixNormal(random.randrange(0, 1200), random.randrange(100, 800) * -1,
                                                           random.randrange(0, 1200), 1000, 100, random.randrange(2, 3)))
                 if self.secCounter == 15:
