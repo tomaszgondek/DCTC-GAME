@@ -541,12 +541,26 @@ class hellBullet(pygame.sprite.Sprite):
         self.speed = 10
         self.rect = self.bullet.get_rect()
         self.mask = pygame.mask.from_surface(self.bullet)
+        self.toggle = False
 
     def draw(self, surf):
         self.rect = self.bullet.get_rect(center=self.pos)
         surf.blit(self.bullet, self.rect)
 
+    def bulletSpeed(self):
+        if self.toggle == False:
+            self.speed -= 1
+        elif self.toggle == True:
+            self.speed += 1
+        if self.speed >= 25:
+            self.toggle = False
+        if self.speed <= 1:
+            self.toggle = True
+
+
+
     def update(self):
+        self.bulletSpeed()
         self.pos = (self.pos[0] + self.dir[0] * self.speed,
                     self.pos[1] + self.dir[1] * self.speed)
         self.rect.move_ip(0,5)
@@ -800,9 +814,9 @@ class frediKamionka(pygame.sprite.Sprite):
         self.hp = 2000
         self.carryDMG = 20
         self.Toggle = False
-        self.fireRatePlasma = 15
-        self.fireRateSniper = 15
-        self.fireRateHell = 20
+        self.fireRatePlasma = 50
+        self.fireRateSniper = 100
+        self.fireRateHell = 10
         self.fireTickPlasma = 0
         self.fireTickSniper = 0
         self.fireTickHell = 0
@@ -850,8 +864,10 @@ class frediKamionka(pygame.sprite.Sprite):
         self.fireTickHell += 1
 
         if self.fireTickPlasma >= self.fireRatePlasma:
+            self.shootPlasma()
             self.fireTickPlasma = 0
         if self.fireTickSniper >= self.fireRateSniper:
+            self.shootSniper()
             self.fireTickSniper = 0
         if self.fireTickHell >= self.fireRateHell:
             self.bulletHell(self.hellOffset)
