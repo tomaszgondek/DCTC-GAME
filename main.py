@@ -82,8 +82,6 @@ def blit_text(surface, text, pos, font, color=pygame.Color('black')):
         y += word_height  # Start on new row.
 
 
-
-
 class CAT(pygame.sprite.Sprite):
     def __init__(self, pos):
         super(CAT, self).__init__()
@@ -521,6 +519,41 @@ class sniperBulletv2(pygame.sprite.Sprite):
         if self.pos[0] > screen.get_width() or self.pos[0] < 0 or self.pos[1] > screen.get_height() or self.pos[1] < 0:
             self.kill()
 
+class hellBullet(pygame.sprite.Sprite):
+    def __init__(self, x, y, isFriendly, givenAngle):
+        pygame.sprite.Sprite.__init__(self)
+        self.sAngle = givenAngle
+        self.carryDMG = 15
+        self.isFriendly = isFriendly
+        self.pos = (x, y)
+        mx = math.cos(math.degrees(self.sAngle))
+        my = math.sin(math.degrees(self.sAngle))
+        self.dir = (mx, my)
+        length = math.hypot(*self.dir)
+        if length == 0.0:
+            self.dir = (0, -1)
+        else:
+            self.dir = (self.dir[0]/length, self.dir[1]/length)
+        angle = math.degrees(math.atan2(-self.dir[1], self.dir[0]))
+        self.bullet = pygame.image.load('graphics/bullets/Laser_Sprites/04.png').convert_alpha()
+        self.bullet = pygame.transform.scale(self.bullet, (200, 32))
+        self.bullet = pygame.transform.rotate(self.bullet, angle)
+        self.speed = 10
+        self.rect = self.bullet.get_rect()
+        self.mask = pygame.mask.from_surface(self.bullet)
+
+    def draw(self, surf):
+        self.rect = self.bullet.get_rect(center=self.pos)
+        surf.blit(self.bullet, self.rect)
+
+    def update(self):
+        self.pos = (self.pos[0] + self.dir[0] * self.speed,
+                    self.pos[1] + self.dir[1] * self.speed)
+        self.rect.move_ip(0,5)
+        self.draw(screen)
+        if self.pos[0] > screen.get_width() or self.pos[0] < 0 or self.pos[1] > screen.get_height() or self.pos[1] < 0:
+            self.kill()
+
 class PerdixNormal(pygame.sprite.Sprite):
     def __init__(self, x, y, tx, ty, scale, speed):
         pygame.sprite.Sprite.__init__(self)
@@ -767,8 +800,13 @@ class frediKamionka(pygame.sprite.Sprite):
         self.hp = 2000
         self.carryDMG = 20
         self.Toggle = False
-        self.fireRate = 15
-        self.fireTick = 0
+        self.fireRatePlasma = 15
+        self.fireRateSniper = 15
+        self.fireRateHell = 20
+        self.fireTickPlasma = 0
+        self.fireTickSniper = 0
+        self.fireTickHell = 0
+        self.hellOffset = 0
         self.mask = pygame.mask.from_surface(self.image)
         self.target = (targetX, targetY)
 
@@ -792,14 +830,34 @@ class frediKamionka(pygame.sprite.Sprite):
             if self.rect.x <= 0:
                 self.Toggle = False
 
+    def shootPlasma(self):
+        bullet = plasmaBulletv2(self.rect.centerx, self.rect.centery + 30, False, True, 8, 1)
+        bullets.add(bullet)
+
+    def shootSniper(self):
+        bullet = sniperBulletv2(self.rect.centerx, self.rect.centery + 30, False, self.target[0], self.target[1])
+        bullets.add(bullet)
+
+    def bulletHell(self, offset):
+        for i in range(0, 7):
+            bullet = hellBullet(self.rect.centerx, self.rect.centery, False, (60 * i) + offset)
+            bullets.add(bullet)
+
+
     def shoot(self):
-        self.fireTick += 1
-        if self.fireTick >= self.fireRate:
-            bullet1 = sniperBulletv2(self.rect.centerx, self.rect.centery+30, False, self.target[0], self.target[1])
-            bullet2 = plasmaBulletv2(self.rect.centerx, self.rect.centery+30, False, True, 8, 1)
-            bullets.add(bullet1)
-            bullets.add(bullet2)
-            self.fireTick = 0
+        self.fireTickPlasma += 1
+        self.fireTickSniper += 1
+        self.fireTickHell += 1
+
+        if self.fireTickPlasma >= self.fireRatePlasma:
+            self.fireTickPlasma = 0
+        if self.fireTickSniper >= self.fireRateSniper:
+            self.fireTickSniper = 0
+        if self.fireTickHell >= self.fireRateHell:
+            self.bulletHell(self.hellOffset)
+            self.hellOffset += 1
+            self.fireTickHell = 0
+
 
 
     def draw(self, surface):
@@ -1294,13 +1352,8 @@ class Game:
                 print(self.secCounter)
                 if self.secCounter == 1:
                     powerupsGroup.add(powerup(500, 0, 1.2, "DMG"))
+                    partridgesNormal.add(frediKamionka(-100, 200, 400, 3, theCat.rect.x, theCat.rect.y))
                     partridgesNormal.add(PerdixNormal(0, -100, 300, 1000, 100, 2))
-                    partridgesNormal.add(PerdixNormal(500, -200, 400, 1000, 100, 2))
-                    partridgesNormal.add(PerdixNormal(800, -200, 500, 1000, 100, 2))
-                    partridgesNormal.add(PerdixNormal(200, -200, 600, 1000, 100, 2))
-                    partridgesNormal.add(PerdixNormal(35, -300, 700, 1000, 100, 2))
-                    partridgesNormal.add(PerdixNormal(178, -400, 800, 1000, 100, 2))
-                    partridgesNormal.add(PerdixNormal(1100, -500, 900, 1000, 100, 2))
                 if self.secCounter == 8:
                     partridgesNormal.add(PerdixShooter(-100, 200, 100, 3))
                     partridgesNormal.add(PerdixShooter(1300, 100, 100, 3))
