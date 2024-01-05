@@ -1413,32 +1413,80 @@ class Game:
                 self.secCounter += 1
                 print(self.secCounter)
                 if self.secCounter == 1:
-                    powerupsGroup.add(powerup(500, 0, 1.2, "DMG"))
-                    partridgesNormal.add(frediKamionka(-100, 200, 400, 3, theCat.rect.x, theCat.rect.y))
-                    partridgesNormal.add(PerdixNormal(0, -100, 300, 1000, 2, 2))
-                    chuj = PerdixNormal(0, -100, 300, 1000, 3, 4)
-                    chuj.hp = 1000
-                    partridgesNormal.add(chuj)
+                    powerupsGroup.add(powerup(500, 0, 1.5, "DMG"))
+                    for x in range(10):
+                        partridgesNormal.add(PerdixNormal(random.randint(0, 1000), -100, 300, random.randint(0, 1000), 2, 2))
+                if self.secCounter == 10:
+                    partridgesNormal.add(PerdixShooter(-100, 200, 100, 3))
+                    partridgesNormal.add(PerdixShooter(1300, 100, 100, 3))
+                if self.secCounter == 12:
+                    powerupsGroup.add(powerup(500, 0, 1.5, "HP"))
+                if self.secCounter == 15:
+                    for x in range(5):
+                        partridgesNormal.add(PerdixNormal(random.randint(0, 1000), -100, 300, random.randint(0, 1000), 2, 2))
+                if self.secCounter == 20:
+                    bigboy = PerdixNormal(0, -100, 300, 200, 3, 4)
+                    bigboy.hp = 600
+                    partridgesNormal.add(bigboy)
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    self.level = 'pause'
+                if event.key == pygame.K_t:
+                    self.level = 'endLevelScreen'
+        partridgesNormal.update()
+        bullets.update()
+        explosions.update()
+        damages.update()
+        powerupsGroup.update()
+        self.scoreDisplay(score)
+        theCat.updateSprite(screen)
+        pygame.display.flip()
+        clock.tick(60)
+
+    def level02(self):
+        self.currentLevel = 'level02'
+        if theCat.isAlive == False:
+            self.level = "failScreen"
+        Background1.update()
+        # handling user input
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_f:
+                    theCat.fireFlag = True
+            if event.type == oneSec:
+                self.secCounter += 1
+                print(self.secCounter)
+                if self.secCounter == 1:
+                    for x in range(5):
+                        partridgesNormal.add(PerdixNormal(0, -100, 300, 1000, 2, 2))
                 if self.secCounter == 8:
                     partridgesNormal.add(PerdixShooter(-100, 200, 100, 3))
                     partridgesNormal.add(PerdixShooter(1300, 100, 100, 3))
                 if self.secCounter == 10:
                     for x in range(3):
                         partridgesNormal.add(PerdixNormal(random.randrange(0, 1200), random.randrange(100, 800) * -1,
-                                                          random.randrange(0, 1200), 1000, 100, random.randrange(2, 3)))
+                                                          random.randrange(0, 1200), 1000, 2, random.randrange(2, 3)))
+                    powerupsGroup.add(powerup(500, 0, 1.5, "DMG"))
                 if self.secCounter == 12:
+                    bigboy = PerdixNormal(0, -100, 300, 200, 3, 4)
+                    bigboy.hp = 600
+                    for x in range(2):
+                        partridgesNormal.add(bigboy)
                     for x in range(4):
                         partridgesNormal.add(PerdixNormal(random.randrange(0, 1200), random.randrange(100, 800) * -1,
-                                                          random.randrange(0, 1200), 1000, 100, random.randrange(2, 3)))
+                                                          random.randrange(0, 1200), 1000, 2, random.randrange(2, 3)))
                 if self.secCounter == 15:
                     partridgesNormal.add(PerdixShooter(-100, 200, 100, 3))
                     partridgesNormal.add(PerdixShooter(1300, 100, 100, 3))
-                    partridgesNormal.add(PerdixShooter(1300, 300, 100, 3))
                 if self.secCounter == 18:
                     partridgesNormal.add(PerdixSniper(-100, 200, 100, 3, theCat.rect.x, theCat.rect.y))
-                    partridgesNormal.add(PerdixSniper(1300, 80, 100, 3, theCat.rect.x, theCat.rect.y))
                 if self.secCounter == 20:
-                    partridgesNormal.add(frediKamionka(-100, 200, 400, 3, theCat.rect.x, theCat.rect.y))
+                    bigboy = PerdixNormal(0, -100, 300, 200, 3, 4)
+                    bigboy.hp = 600
+                    partridgesNormal.add(bigboy)
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     self.level = 'pause'
