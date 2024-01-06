@@ -1443,7 +1443,7 @@ class Game:
                     for x in range(10):
                         partridgesNormal.add(PerdixNormal(random.randint(0, 1000), -100, 400, 1000, 2, 2))
                 if  self.secCounter >= 40 or score == 30:
-                    self.level01Done == True
+                    self.level01Done = True
                     self.saveHandler()
                     self.level = 'endLevelScreen'
             if event.type == pygame.KEYDOWN:
@@ -1517,7 +1517,7 @@ class Game:
                     partridgesNormal.add(PerdixShooter(-100, 200, 100, 3))
                     partridgesNormal.add(PerdixShooter(1200, 100, 100, 3))
                 if self.secCounter == 40:
-                    bigboy = PerdixNormal(0, -100, 300, 200, 3, 4)
+                    bigboy = PerdixNormal(0, 100, 300, 200, 3, 4)
                     bigboy.hp = 1500
                     partridgesNormal.add(bigboy)
                     bigboy2 = PerdixNormal(1200, 100, 300, -200, 3, 4)
