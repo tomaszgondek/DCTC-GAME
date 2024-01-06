@@ -798,9 +798,16 @@ class PerdixSniper(pygame.sprite.Sprite):
     def __init__(self, x, y, scale, speed, targetX, targetY):
         pygame.sprite.Sprite.__init__(self)
         self.pos = (x, y)
-        self.image = pygame.image.load('graphics/placeholder_duck.png').convert_alpha()
-        self.image = pygame.transform.scale(self.image, (scale, scale))
-        self.rect = self.image.get_rect()
+        self.index = 0;
+        self.images = []
+        for i in range(1, 3):
+            img = pygame.image.load(f"graphics/sniper_partridge/{i}.png").convert_alpha()
+            img = pygame.transform.flip(img, False, True)
+            img = pygame.transform.scale_by(img, scale)
+            img = pygame.transform.flip(img, 1, 0)
+            self.images.append(img)
+        self.rect = self.images[self.index].get_rect()
+        self.image = self.images[self.index]
         self.rect.center = (x, y)
         self.speed = speed
         self.hp = 150
@@ -808,7 +815,9 @@ class PerdixSniper(pygame.sprite.Sprite):
         self.Toggle = False
         self.fireRate = 60
         self.fireTick = 0
-        self.mask = pygame.mask.from_surface(self.image)
+        self.counter = 0
+        self.switch = 0
+        self.mask = pygame.mask.from_surface(self.images[self.index])
         self.target = (targetX, targetY)
 
     def checkColisions(self):
@@ -843,6 +852,16 @@ class PerdixSniper(pygame.sprite.Sprite):
         surface.blit(self.image, (self.rect.x, self.rect.y))
 
     def update(self):
+        anim = random.randrange(10, 12)
+        self.counter += 1
+        if self.counter >= anim and self.switch == 0:
+            self.switch = 1
+            self.image = self.images[0]
+            self.counter = 0
+        if self.counter >= anim and self.switch == 1:
+            self.switch = 0
+            self.image = self.images[1]
+            self.counter = 0
         self.checkColisions()
         self.shoot()
         self.target = (theCat.rect.centerx, theCat.rect.centery)
