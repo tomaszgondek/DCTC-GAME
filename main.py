@@ -1442,6 +1442,10 @@ class Game:
                 if self.secCounter == 30:
                     for x in range(10):
                         partridgesNormal.add(PerdixNormal(random.randint(0, 1000), -100, 400, 1000, 2, 2))
+                if  self.secCounter >= 40 or score == 30:
+                    self.level01Done == True
+                    self.saveHandler()
+                    self.level = 'endLevelScreen'
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     self.level = 'pause'
@@ -1478,7 +1482,7 @@ class Game:
                         partridgesNormal.add(PerdixNormal(0, -100, 300, 1000, 2, 2))
                 if self.secCounter == 8:
                     partridgesNormal.add(PerdixShooter(-100, 200, 100, 3))
-                    partridgesNormal.add(PerdixShooter(1300, 100, 100, 3))
+                    partridgesNormal.add(PerdixShooter(1200, 100, 100, 3))
                 if self.secCounter == 10:
                     for x in range(3):
                         partridgesNormal.add(PerdixNormal(random.randrange(0, 1200), random.randrange(100, 800) * -1,
@@ -1494,13 +1498,31 @@ class Game:
                                                           random.randrange(0, 1200), 1000, 2, random.randrange(2, 3)))
                 if self.secCounter == 15:
                     partridgesNormal.add(PerdixShooter(-100, 200, 100, 3))
-                    partridgesNormal.add(PerdixShooter(1300, 100, 100, 3))
+                    partridgesNormal.add(PerdixShooter(1200, 100, 100, 3))
                 if self.secCounter == 18:
                     partridgesNormal.add(PerdixSniper(-100, 200, 100, 3, theCat.rect.x, theCat.rect.y))
                 if self.secCounter == 20:
                     bigboy = PerdixNormal(0, -100, 300, 200, 3, 4)
-                    bigboy.hp = 600
+                    bigboy.hp = 1500
                     partridgesNormal.add(bigboy)
+                if self.secCounter == 25:
+                    powerupsGroup.add(powerup(-500, 20, 1.5, "HP"))
+                    powerupsGroup.add(powerup(500, 20, 1.5, "DMG"))
+                if self.secCounter == 28:
+                    partridgesNormal.add(PerdixNormal(random.randrange(0, 1200), random.randrange(100, 800) * -1,
+                                                      random.randrange(0, 1200), 1000, 2, random.randrange(2, 3)))
+                if self.secCounter == 30:
+                    partridgesNormal.add(PerdixShooter(-100, 200, 100, 3))
+                    partridgesNormal.add(PerdixShooter(1200, 100, 100, 3))
+                    partridgesNormal.add(PerdixShooter(-100, 200, 100, 3))
+                    partridgesNormal.add(PerdixShooter(1200, 100, 100, 3))
+                if self.secCounter == 40:
+                    bigboy = PerdixNormal(0, -100, 300, 200, 3, 4)
+                    bigboy.hp = 1500
+                    partridgesNormal.add(bigboy)
+                    bigboy2 = PerdixNormal(1200, 100, 300, -200, 3, 4)
+                    bigboy2.hp = 1500
+                    partridgesNormal.add(bigboy2)
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     self.level = 'pause'
