@@ -1578,7 +1578,7 @@ class Game:
                     powerupsGroup.add(powerup(-500, 20, 1.5, "HP"))
                 if self.secCounter == 40:
                     partridgesNormal.add(PerdixSniper(-100, -100, 2, 2, theCat.rect.x, theCat.rect.y))
-                    bigboy = PerdixNormal(0, 100, 600, 800, 3, 2)
+                    bigboy = PerdixNormal(0, -100, 600, 800, 3, 2)
                     bigboy.hp = 1500
                     partridgesNormal.add(bigboy)
                     bigboy2 = PerdixNormal(1200, -100, 600, 800, 3, 2)
