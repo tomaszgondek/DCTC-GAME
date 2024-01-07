@@ -1525,7 +1525,7 @@ class Game:
                 print(self.secCounter)
                 if self.secCounter == 1:
                     for x in range(5):
-                        partridgesNormal.add(PerdixNormal(0, -100, 300, 1000, 2, 2))
+                        partridgesNormal.add(PerdixNormal(random.randrange(0, 1200), -100, 650, 1000, 2, 2))
                 if self.secCounter == 8:
                     for x in range(3):
                         partridgesNormal.add(PerdixNormal(random.randrange(0, 1200), random.randrange(100, 800) * -1,
@@ -1549,21 +1549,22 @@ class Game:
                 if self.secCounter == 21:
                     partridgesNormal.add(PerdixNormal(random.randrange(0, 1200), random.randrange(100, 800) * -1,
                                                       random.randrange(0, 1200), 1000, 2, random.randrange(2, 3)))
-                if self.secCounter == 25:
-                    powerupsGroup.add(powerup(-500, 20, 1.5, "HP"))
                 if self.secCounter == 30:
                     partridgesNormal.add(PerdixShooter(-100, 200, 2, 3))
                     partridgesNormal.add(PerdixShooter(1200, 100, 2, 3))
                     partridgesNormal.add(PerdixShooter(-100, 200, 2, 3))
                     partridgesNormal.add(PerdixShooter(1200, 100, 2, 3))
+                if self.secCounter == 35:
+                    powerupsGroup.add(powerup(-500, 20, 1.5, "HP"))
                 if self.secCounter == 40:
-                    bigboy = PerdixNormal(0, 100, 300, 200, 3, 4)
+                    partridgesNormal.add(PerdixSniper(-100, -100, 2, 2, theCat.rect.x, theCat.rect.y))
+                    bigboy = PerdixNormal(0, 100, 600, 800, 3, 2)
                     bigboy.hp = 1500
                     partridgesNormal.add(bigboy)
-                    bigboy2 = PerdixNormal(1200, 100, 300, -200, 3, 4)
+                    bigboy2 = PerdixNormal(1200, -100, 600, 800, 3, 2)
                     bigboy2.hp = 1500
                     partridgesNormal.add(bigboy2)
-                if self.secCounter >= 60 or score == 40:
+                if self.secCounter >= 60 or score == 35:
                     self.level02Done = True
                     self.saveHandler()
                     self.level = 'endLevelScreen'
@@ -1600,6 +1601,39 @@ class Game:
                 print(self.secCounter)
                 if self.secCounter == 1:
                     partridgesNormal.add(PerdixShooter(-100, 200, 2, 3))
+                if self.secCounter == 5:
+                    partridgesNormal.add(PerdixShooter(-100, 200, 2, 3))
+                    partridgesNormal.add(PerdixShooter(-200, 200, 2, 3))
+                    partridgesNormal.add(PerdixShooter(1300, 200, 2, 3))
+                    partridgesNormal.add(PerdixShooter(1500, 200, 2, 3))
+                if self.secCounter == 10:
+                    partridgesNormal.add(PerdixSniper(-100, -100, 2, 3, theCat.rect.x, theCat.rect.y))
+                    partridgesNormal.add(PerdixSniper(-100, -100, 2, 3, theCat.rect.x, theCat.rect.y))
+                if self.secCounter == 15:
+                    partridgesNormal.add(PerdixSniper(-100, -100, 2, 3, theCat.rect.x, theCat.rect.y))
+                    for x in range(5):
+                        partridgesNormal.add(PerdixNormal(random.randrange(0, 1200), -100, 650, 1000, 2, 2))
+                if self.secCounter == 18:
+                    for x in range(5):
+                        partridgesNormal.add(PerdixNormal(random.randrange(0, 1200), -100, 650, 1000, 2, 2))
+                if self.secCounter == 25:
+                    for x in range(4):
+                        partridgesNormal.add(PerdixShooter(random.randrange(-200, 0), 200, 2, 3))
+                if self.secCounter == 30:
+                    for x in range(2):
+                        partridgesNormal.add(PerdixSniper(random.randrange(0, 1200), -100, 2, 3, theCat.rect.x, theCat.rect.y))
+                if self.secCounter == 38:
+                    powerupsGroup.add(powerup(600, 20, 1.5, 'DMG'))
+                if self.secCounter == 40:
+                    bigboy1 = PerdixNormal(random.randrange(0, 1200), -100, 600, 1000, 3, 2)
+                    bigboy1.hp = 1000
+                    partridgesNormal.add(bigboy1)
+                    bigboy2 = PerdixNormal(random.randrange(0, 1200), -100, 600, 800, 3, 2)
+                    bigboy2.hp = 600
+                    partridgesNormal.add(bigboy2)
+                    bigboy3 = PerdixNormal(random.randrange(0, 1200), -100, 600, 1000, 3, 2)
+                    bigboy3.hp = 800
+                    partridgesNormal.add(bigboy3)
                 if self.secCounter >= 60 or score == 40:
                     self.level03Done = True
                     self.saveHandler()
