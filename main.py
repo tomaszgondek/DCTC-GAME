@@ -1670,7 +1670,41 @@ class Game:
                 self.secCounter += 1
                 print(self.secCounter)
                 if self.secCounter == 1:
+                    partridgesNormal.add(PerdixNormal(480, -100, 650, 1000, 2, 2))
+                    partridgesNormal.add(PerdixNormal(720, -100, 650, 1000, 2, 2))
+                    partridgesNormal.add(PerdixNormal(1200, -100, 650, 1000, 2, 2))
+                if self.secCounter == 8:
                     partridgesNormal.add(PerdixShooter(-100, 200, 2, 3))
+                    partridgesNormal.add(PerdixShooter(-400, 200, 2, 3))
+                    partridgesNormal.add(PerdixShooter(1300, 200, 2, 3))
+                    partridgesNormal.add(PerdixShooter(1600, 200, 2, 3))
+                    partridgesNormal.add(PerdixShooter(500, 200, 2, 3))
+                if self.secCounter == 16:
+                    partridgesNormal.add(PerdixShooter(1100, 200, 2, 3))
+                    partridgesNormal.add(PerdixShooter(random.randint(1200, 1500), 200, 2, 3))
+                    partridgesNormal.add(PerdixShooter(-500, 200, 2, 3))
+                    partridgesNormal.add(PerdixShooter(random.randint(-200, 0), 200, 2, 3))
+                if self.secCounter == 22:
+                    bigshooter = PerdixShooter(1400, 200, 4, 3)
+                    bigshooter.hp = 800
+                    partridgesNormal.add(bigshooter)
+                    bigshooter = PerdixShooter(-200, 200, 4, 3)
+                    bigshooter.hp = 800
+                    partridgesNormal.add(bigshooter)
+                    bigshooter = PerdixShooter(600, 200, 4, 3)
+                    bigshooter.hp = 800
+                    partridgesNormal.add(bigshooter)
+                if self.secCounter == 26:
+                    powerupsGroup.add(powerup(600, 20, 2, 'HP'))
+                if self.secCounter == 30:
+                    bigsniper = PerdixSniper(-300, 200, 4, 3)
+                    bigsniper.hp = 900
+                    partridgesNormal.add(bigsniper)
+                    bigsniper2 = PerdixSniper(1300, 200, 4, 3)
+                    bigsniper2.hp = 900
+                    partridgesNormal.add(bigsniper2)
+                if self.secCounter == 32:s
+                    powerupsGroup.add(powerup(600, 20, 2, 'DMG'))
                 if self.secCounter >= 60 or score == 40:
                     self.level04Done = True
                     self.saveHandler()
