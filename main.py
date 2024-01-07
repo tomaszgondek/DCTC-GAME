@@ -313,7 +313,7 @@ class clouds(pygame.sprite.Sprite):
         self.speed = 0
         self.offset = offset
         self.image = pygame.image.load(imagePath).convert_alpha()
-        self.image = pygame.transform.scale_by(self.image, 1.5)
+        self.image = pygame.transform.scale_by(self.image, 2)
         self.height = self.image.get_height()
         self.panels = math.ceil(screen.get_height() / self.image.get_height()) + 2
 
@@ -322,7 +322,7 @@ class clouds(pygame.sprite.Sprite):
         if abs(self.speed) > self.image.get_height():
             self.speed = 0
         for i in range (self.panels):
-            screen.blit(self.image, (0, i * self.height + self.speed - self.height))
+            screen.blit(self.image, (-200, i * self.height + self.speed - self.height))
 
 class laserBullet(pygame.sprite.Sprite):
     def __init__(self, x, y, isFriendly, dmgIncrease):
@@ -1480,7 +1480,7 @@ class Game:
                 if self.secCounter == 10:
                     partridgesNormal.add(PerdixShooter(-100, 200, 2, 3))
                     partridgesNormal.add(PerdixShooter(1300, 100, 2, 3))
-                    partridgesNormal.add(PerdixShooter(450, 200, 2, 3))
+                    partridgesNormal.add(PerdixShooter(-200, 200, 2, 3))
                     partridgesNormal.add(PerdixShooter(-600, 100, 2, 3))
                 if self.secCounter == 12:
                     powerupsGroup.add(powerup(500, 20, 1.25, "HP"))
@@ -1506,15 +1506,13 @@ class Game:
                     self.level01Done = True
                     self.saveHandler()
                     self.level = 'endLevelScreen'
-                elif self.secCounter >= 60:
+                elif self.secCounter >= 30 and len(partridgesNormal) == 0:
                     self.level01Done = True
                     self.saveHandler()
                     self.level = 'endLevelScreen'
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     self.level = 'pause'
-                if event.key == pygame.K_t:
-                    self.level = 'endLevelScreen'
         partridgesNormal.update()
         bullets.update()
         explosions.update()
@@ -1587,15 +1585,13 @@ class Game:
                     self.level02Done = True
                     self.saveHandler()
                     self.level = 'endLevelScreen'
-                elif self.secCounter >= 60:
+                elif self.secCounter >= 40 and len(partridgesNormal) == 0:
                     self.level02Done = True
                     self.saveHandler()
                     self.level = 'endLevelScreen'
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     self.level = 'pause'
-                if event.key == pygame.K_t:
-                    self.level = 'endLevelScreen'
         partridgesNormal.update()
         bullets.update()
         explosions.update()
@@ -1662,15 +1658,13 @@ class Game:
                     self.level03Done = True
                     self.saveHandler()
                     self.level = 'endLevelScreen'
-                elif self.secCounter >= 60:
+                elif self.secCounter >= 45 and len(partridgesNormal) == 0:
                     self.level03Done = True
                     self.saveHandler()
                     self.level = 'endLevelScreen'
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     self.level = 'pause'
-                if event.key == pygame.K_t:
-                    self.level = 'endLevelScreen'
         partridgesNormal.update()
         bullets.update()
         explosions.update()
@@ -1739,15 +1733,13 @@ class Game:
                     self.level04Done = True
                     self.saveHandler()
                     self.level = 'endLevelScreen'
-                elif self.secCounter >= 60:
+                elif self.secCounter >= 30 and len(partridgesNormal) == 0:
                     self.level04Done = True
                     self.saveHandler()
                     self.level = 'endLevelScreen'
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     self.level = 'pause'
-                if event.key == pygame.K_t:
-                    self.level = 'endLevelScreen'
         partridgesNormal.update()
         bullets.update()
         explosions.update()
