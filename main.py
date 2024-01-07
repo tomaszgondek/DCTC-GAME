@@ -695,7 +695,7 @@ class powerup(pygame.sprite.Sprite):
         self.powerupVal = value
         self.pos = (x, y)
         self.target = (x, 2000)
-        self.image = pygame.image.load('graphics/fredi.jpg').convert_alpha()
+        self.image = pygame.image.load('graphics/pika.png').convert_alpha()
         self.image = pygame.transform.scale(self.image, (100, 100))
         self.rect = self.image.get_rect()
         self.rect.center = (x, y)
