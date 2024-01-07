@@ -14,7 +14,6 @@ uiBackgroundColor = (37, 0, 46)
 
 
 # static graphics load
-skyblock = pygame.image.load('graphics/placeholder_background.jpg').convert()
 playbuttonWide = pygame.image.load('graphics/PLAYBUTTON.jpg')
 playbuttonWide = pygame.transform.scale(playbuttonWide, (400, 150))
 playbuttonSmall = pygame.image.load('graphics/PLAYBUTTON_SMALL.jpg')
@@ -308,6 +307,22 @@ class skyBlock(pygame.sprite.Sprite):
         for i in range (self.panels):
             screen.blit(self.image, (0, i * self.height + self.speed - self.height))
 
+class clouds(pygame.sprite.Sprite):
+    def __init__(self, imagePath, offset):
+        pygame.sprite.Sprite.__init__(self)
+        self.speed = 0
+        self.offset = offset
+        self.image = pygame.image.load(imagePath).convert_alpha()
+        self.image = pygame.transform.scale_by(self.image, 1.5)
+        self.height = self.image.get_height()
+        self.panels = math.ceil(screen.get_height() / self.image.get_height()) + 2
+
+    def update(self):
+        self.speed += self.offset
+        if abs(self.speed) > self.image.get_height():
+            self.speed = 0
+        for i in range (self.panels):
+            screen.blit(self.image, (0, i * self.height + self.speed - self.height))
 
 class laserBullet(pygame.sprite.Sprite):
     def __init__(self, x, y, isFriendly, dmgIncrease):
@@ -665,12 +680,10 @@ class PerdixNormal(pygame.sprite.Sprite):
         anim = random.randrange(10, 12)
         self.counter += 1
         if self.counter >= anim and self.switch == 0:
-            print(len(self.images))
             self.switch = 1
             self.image = self.images[0]
             self.counter = 0
         if self.counter >= anim and self.switch == 1:
-            print("02")
             self.switch = 0
             self.image = self.images[1]
             self.counter = 0
@@ -1447,6 +1460,7 @@ class Game:
         if theCat.isAlive == False:
             self.level = "failScreen"
         Background1.update()
+        BackgroundClouds.update()
         # handling user input
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -1516,6 +1530,7 @@ class Game:
         if theCat.isAlive == False:
             self.level = "failScreen"
         Background1.update()
+        BackgroundClouds.update()
         # handling user input
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -1596,6 +1611,7 @@ class Game:
         if theCat.isAlive == False:
             self.level = "failScreen"
         Background1.update()
+        BackgroundClouds.update()
         # handling user input
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -1670,6 +1686,7 @@ class Game:
         if theCat.isAlive == False:
             self.level = "failScreen"
         Background1.update()
+        BackgroundClouds.update()
         # handling user input
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -1761,6 +1778,7 @@ theCat = CAT((screen.get_width()/2-32, 700))
 powerupsGroup = pygame.sprite.Group()
 game = Game()
 Background1 = skyBlock('graphics/tlo.png', 0.5)
+BackgroundClouds = clouds('graphics/chmurki.png', 1.5)
 # Custom events
 oneSec, t = pygame.USEREVENT+1, 1000
 pygame.time.set_timer(oneSec, t)
