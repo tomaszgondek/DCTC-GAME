@@ -1488,7 +1488,11 @@ class Game:
                 if self.secCounter == 30:
                     for x in range(10):
                         partridgesNormal.add(PerdixNormal(random.randint(0, 1000), -100, 600, 500, 2, 1))
-                if self.secCounter >= 60 or score == 30:
+                if score == 30:
+                    self.level01Done = True
+                    self.saveHandler()
+                    self.level = 'endLevelScreen'
+                elif self.secCounter >= 60:
                     self.level01Done = True
                     self.saveHandler()
                     self.level = 'endLevelScreen'
@@ -1564,7 +1568,11 @@ class Game:
                     bigboy2 = PerdixNormal(1200, -100, 600, 800, 3, 2)
                     bigboy2.hp = 1500
                     partridgesNormal.add(bigboy2)
-                if self.secCounter >= 60 or score == 35:
+                if score == 35:
+                    self.level02Done = True
+                    self.saveHandler()
+                    self.level = 'endLevelScreen'
+                elif self.secCounter >= 60:
                     self.level02Done = True
                     self.saveHandler()
                     self.level = 'endLevelScreen'
@@ -1634,7 +1642,11 @@ class Game:
                     bigboy3 = PerdixNormal(random.randrange(0, 1200), -100, 600, 1000, 3, 2)
                     bigboy3.hp = 800
                     partridgesNormal.add(bigboy3)
-                if self.secCounter >= 60 or score == 40:
+                if score == 40:
+                    self.level03Done = True
+                    self.saveHandler()
+                    self.level = 'endLevelScreen'
+                elif self.secCounter >= 60:
                     self.level03Done = True
                     self.saveHandler()
                     self.level = 'endLevelScreen'
@@ -1706,7 +1718,11 @@ class Game:
                     bigsniper2 = PerdixSniper(1300, 20, 3, 3, theCat.rect.x, theCat.rect.y)
                     bigsniper2.hp = 900
                     partridgesNormal.add(bigsniper2)
-                if self.secCounter >= 60 or score == 50:
+                if score == 50:
+                    self.level04Done = True
+                    self.saveHandler()
+                    self.level = 'endLevelScreen'
+                elif self.secCounter >= 60:
                     self.level04Done = True
                     self.saveHandler()
                     self.level = 'endLevelScreen'
