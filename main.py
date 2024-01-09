@@ -914,7 +914,7 @@ class frediKamionka(pygame.sprite.Sprite):
         self.image = self.images[self.index]
         self.rect.center = (x, y)
         self.speed = speed
-        self.hp = 3000
+        self.hp = 8000
         self.carryDMG = 20
         self.Toggle = False
         self.fireRatePlasma = 50
@@ -995,8 +995,8 @@ class frediKamionka(pygame.sprite.Sprite):
         self.angryCheck = True
         self.speed = 2*self.speed
         self.fireRateHellv2 = 100
-        self.fireTickHell = 8
-        self.fireRatePlasma = 30
+        self.fireRateHell = 6
+        self.fireRatePlasma = 70
         explosion = Explosion2Firework(self.rect.centerx, self.rect.centery, 600)
         explosions.add(explosion)
         self.fireTickHellv2 = 200
@@ -1006,7 +1006,7 @@ class frediKamionka(pygame.sprite.Sprite):
         surface.blit(self.image, (self.rect.x, self.rect.y))
 
     def update(self):
-        if self.hp < 2500 and self.angryCheck == False:
+        if self.hp < 3000 and self.angryCheck == False:
             self.angryChecker()
         self.checkColisions()
         self.shoot()
@@ -1398,6 +1398,23 @@ class Game:
                     if quitButton.checkForInput(menuMousePos):
                         pygame.quit()
                         exit()
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_r:
+                        self.level01Done = False
+                        self.level02Done = False
+                        self.level03Done = False
+                        self.level04Done = False
+                        self.level05Done = False
+                        self.levelIntroDone = False
+                        self.saveHandler()
+                    if event.key == pygame.K_u:
+                        self.level01Done = True
+                        self.level02Done = True
+                        self.level03Done = True
+                        self.level04Done = True
+                        self.level05Done = True
+                        self.levelIntroDone = True
+                        self.saveHandler()
             pygame.display.flip()
             clock.tick(60)
 
@@ -1815,8 +1832,23 @@ class Game:
                 self.secCounter += 1
                 print(self.secCounter)
                 if self.secCounter == 1:
+                    partridgesNormal.add(PerdixNormal(240, -100, 650, 1000, 2, 2))
+                    partridgesNormal.add(PerdixNormal(480, -100, 650, 1000, 2, 2))
+                    partridgesNormal.add(PerdixNormal(720, -100, 650, 1000, 2, 2))
+                    partridgesNormal.add(PerdixNormal(1200, -100, 650, 1000, 2, 2))
+                if self.secCounter == 4:
+                    powerupsGroup.add(powerup(600, 20, 2, 'DMG'))
+                if self.secCounter == 8:
                     BOSS = frediKamionka(-100, 200, 3, 2, theCat.rect.centerx, theCat.rect.centery)
                     partridgesNormal.add(BOSS)
+                if self.secCounter == 20:
+                    powerupsGroup.add(powerup(600, 20, 300, 'HP'))
+                if self.secCounter > 8 and len(partridgesNormal) == 0 and len(explosions) == 0:
+                    global score
+                    score += 100
+                    self.level05Done = True
+                    self.saveHandler()
+                    self.level = 'endLevelScreen'
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     self.level = 'pause'
