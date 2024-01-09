@@ -22,40 +22,40 @@ playbuttonSmall = pygame.image.load('graphics/PLAYBUTTON_SMALL.jpg')
 # 1st
 text1 = font.render('So you want to hear a story, eh?', True, (255, 255, 255))
 text11 = font.render('press SPACE to continue', True, (255, 255, 255))
-background1 = pygame.image.load('graphics/PLACEHOLDER1.jpg')
+background1 = pygame.image.load('graphics/intro/1.png')
 text1 = pygame.transform.scale(text1, (text1.get_width()/2, text1.get_height()/2))
 text11 = pygame.transform.scale(text11, (text11.get_width()/4, text11.get_height()/4))
 # 2nd
 text2 = font.render('There was a cat planet, in a galaxy far away...', True, (255, 255, 255))
-background2 = pygame.image.load('graphics/PLACEHOLDER1.jpg')
+background2 = pygame.image.load('graphics/intro/2.png')
 text2 = pygame.transform.scale(text2, (text2.get_width()/2, text2.get_height()/2))
 # 3rd
 text3 = font.render('...where all cats lived lazy and care-free lives.', True, (255, 255, 255))
-background3 = pygame.image.load('graphics/PLACEHOLDER1.jpg')
+background3 = pygame.image.load('graphics/intro/3.png')
 text3 = pygame.transform.scale(text3, (text3.get_width()/2, text3.get_height()/2))
 # 4th
 text4 = font.render('And suddenly, everything has changed.', True, (255, 255, 255))
-background4 = pygame.image.load('graphics/PLACEHOLDER1.jpg')
+background4 = pygame.image.load('graphics/intro/4.png')
 text4 = pygame.transform.scale(text4, (text4.get_width()/2, text4.get_height()/2))
 # 5th
 text5 = font.render('Unknown threat, from the stars.', True, (255, 255, 255))
-background5 = pygame.image.load('graphics/PLACEHOLDER1.jpg')
+background5 = pygame.image.load('graphics/intro/5.png')
 text5 = pygame.transform.scale(text5, (text5.get_width()/2, text5.get_height()/2))
 # 6th
 text6 = font.render('A war has begun, that claimed many lives.', True, (255, 255, 255))
-background6 = pygame.image.load('graphics/PLACEHOLDER1.jpg')
+background6 = pygame.image.load('graphics/intro/6.png')
 text6 = pygame.transform.scale(text6, (text6.get_width()/2, text6.get_height()/2))
 # 7th
 text7 = font.render('But when everything seemed to be lost...', True, (255, 255, 255))
-background7 = pygame.image.load('graphics/PLACEHOLDER1.jpg')
+background7 = pygame.image.load('graphics/intro/7.png')
 text7 = pygame.transform.scale(text7, (text7.get_width()/2, text7.get_height()/2))
 # 8th
 text8 = font.render('...an ancient cat, a pallas cat with unimaginable powers...', True, (255, 255, 255))
-background8 = pygame.image.load('graphics/PLACEHOLDER1.jpg')
+background8 = pygame.image.load('graphics/intro/8.png')
 text8 = pygame.transform.scale(text8, (text8.get_width()/2, text8.get_height()/2))
 # 9th
 text9 = font.render('...came to rescue, with one goal - to kill the invaders', True, (255, 255, 255))
-background9 = pygame.image.load('graphics/PLACEHOLDER1.jpg')
+background9 = pygame.image.load('graphics/intro/9.png')
 text9 = pygame.transform.scale(text9, (text9.get_width()/2, text9.get_height()/2))
 # 10th
 # tutaj cały ten, title screen
