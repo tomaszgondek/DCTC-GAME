@@ -894,12 +894,24 @@ class frediKamionka(pygame.sprite.Sprite):
     def __init__(self, x, y, scale, speed, targetX, targetY):
         pygame.sprite.Sprite.__init__(self)
         self.pos = (x, y)
-        self.image = pygame.image.load('graphics/fredi.jpg').convert_alpha()
-        self.image = pygame.transform.scale(self.image, (scale, scale))
-        self.rect = self.image.get_rect()
+        self.index = 0;
+        self.images = []
+        self.images_angry = []
+        for i in range(1, 7):
+            img = pygame.image.load(f"graphics/fredi/fredi_normal/{i}.png").convert_alpha()
+            img = pygame.transform.scale_by(img, scale)
+            img = pygame.transform.flip(img, 1, 0)
+            self.images.append(img)
+        for i in range(1, 7):
+            img = pygame.image.load(f"graphics/fredi/fredi_angry/{i}.png").convert_alpha()
+            img = pygame.transform.scale_by(img, scale)
+            img = pygame.transform.flip(img, 1, 0)
+            self.images_angry.append(img)
+        self.rect = self.images[self.index].get_rect()
+        self.image = self.images[self.index]
         self.rect.center = (x, y)
         self.speed = speed
-        self.hp = 2000
+        self.hp = 3000
         self.carryDMG = 20
         self.Toggle = False
         self.fireRatePlasma = 50
@@ -913,6 +925,9 @@ class frediKamionka(pygame.sprite.Sprite):
         self.hellOffset = 0
         self.mask = pygame.mask.from_surface(self.image)
         self.target = (targetX, targetY)
+        self.counter = 0
+        self.angryFlag = False
+        self.angryCheck = False
 
     def checkColisions(self):
         hits = []
@@ -927,7 +942,7 @@ class frediKamionka(pygame.sprite.Sprite):
     def moveLeftRight(self):
         if not self.Toggle:
             self.rect.x += self.speed
-            if self.rect.x >= screen.get_width()/3 - self.image.get_width()/3:
+            if self.rect.x >= screen.get_width() - self.image.get_width():
                 self.Toggle = True
         if self.Toggle == True:
             self.rect.x -= self.speed
@@ -972,20 +987,49 @@ class frediKamionka(pygame.sprite.Sprite):
             self.fireTickHellv2 = 0
 
 
+    def angryChecker(self):
+        self.angryFlag = True
+        self.angryCheck = True
+        self.speed = 2*self.speed
+        self.fireRateHellv2 = 100
+        self.fireTickHell = 8
+        self.fireRatePlasma = 30
+        explosion = Explosion2Firework(self.rect.centerx, self.rect.centery, 600)
+        explosions.add(explosion)
+        self.fireTickHellv2 = 200
+        self.fireTickHell = 200
 
     def draw(self, surface):
         surface.blit(self.image, (self.rect.x, self.rect.y))
 
     def update(self):
+        if self.hp < 2500 and self.angryCheck == False:
+            self.angryChecker()
         self.checkColisions()
         self.shoot()
+        anim = 6
+        self.counter += 1
+        if self.counter >= anim and self.index < len(self.images) - 1 and self.angryFlag == False:
+            self.counter = 0
+            self.index += 1
+            self.image = self.images[self.index]
+        if self.index >= len(self.images) - 1 and self.counter >= anim and self.angryFlag == False:
+            self.index = 0
+            self.image = self.images[self.index]
+        if self.counter >= anim and self.index < len(self.images_angry) - 1 and self.angryFlag == True:
+            self.counter = 0
+            self.index += 1
+            self.image = self.images_angry[self.index]
+        if self.index >= len(self.images_angry) - 1 and self.counter >= anim and self.angryFlag == True:
+            self.index = 0
+            self.image = self.images_angry[self.index]
         self.target = (theCat.rect.centerx, theCat.rect.centery)
         if self.rect.y > screen.get_height():
             self.kill()
         # self.moveDown()
         self.moveLeftRight()
         if self.hp <= 0:
-            explosion = Explosion2Firework(self.rect.centerx, self.rect.centery, 250)
+            explosion = Explosion2Firework(self.rect.centerx, self.rect.centery, 900)
             explosions.add(explosion)
             global score
             score += 5
@@ -1585,7 +1629,7 @@ class Game:
                     self.level02Done = True
                     self.saveHandler()
                     self.level = 'endLevelScreen'
-                elif self.secCounter >= 40 and len(partridgesNormal) == 0:
+                elif self.secCounter >= 40 and len(partridgesNormal) >= 0:
                     self.level02Done = True
                     self.saveHandler()
                     self.level = 'endLevelScreen'
@@ -1737,6 +1781,39 @@ class Game:
                     self.level04Done = True
                     self.saveHandler()
                     self.level = 'endLevelScreen'
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    self.level = 'pause'
+        partridgesNormal.update()
+        bullets.update()
+        explosions.update()
+        damages.update()
+        powerupsGroup.update()
+        self.scoreDisplay(score)
+        theCat.updateSprite(screen)
+        pygame.display.flip()
+        clock.tick(60)
+
+    def level05(self):
+        self.currentLevel = 'level05'
+        if theCat.isAlive == False:
+            self.level = "failScreen"
+        Background1.update()
+        BackgroundClouds.update()
+        # handling user input
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_f:
+                    theCat.fireFlag = True
+            if event.type == oneSec:
+                self.secCounter += 1
+                print(self.secCounter)
+                if self.secCounter == 1:
+                    BOSS = frediKamionka(-100, 200, 3, 2, theCat.rect.centerx, theCat.rect.centery)
+                    partridgesNormal.add(BOSS)
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     self.level = 'pause'
