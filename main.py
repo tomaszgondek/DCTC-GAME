@@ -708,7 +708,10 @@ class powerup(pygame.sprite.Sprite):
         self.powerupVal = value
         self.pos = (x, y)
         self.target = (x, 2000)
-        self.image = pygame.image.load('graphics/pika.png').convert_alpha()
+        if self.type == 'DMG':
+            self.image = pygame.image.load('graphics/dmg.png').convert_alpha()
+        if self.type == 'HP':
+            self.image = pygame.image.load('graphics/hp.png').convert_alpha()
         self.image = pygame.transform.scale(self.image, (100, 100))
         self.rect = self.image.get_rect()
         self.rect.center = (x, y)
@@ -1619,13 +1622,13 @@ class Game:
                     powerupsGroup.add(powerup(-500, 20, 1.5, "HP"))
                 if self.secCounter == 40:
                     partridgesNormal.add(PerdixSniper(-100, -100, 2, 2, theCat.rect.x, theCat.rect.y))
-                    bigboy = PerdixNormal(0, 100, 600, 800, 3, 2)
+                    bigboy = PerdixNormal(0, -100, 600, 800, 3, 2)
                     bigboy.hp = 1500
                     partridgesNormal.add(bigboy)
                     bigboy2 = PerdixNormal(1200, -100, 600, 800, 3, 2)
                     bigboy2.hp = 1500
                     partridgesNormal.add(bigboy2)
-                if score == 35:
+                if score >= 35:
                     self.level02Done = True
                     self.saveHandler()
                     self.level = 'endLevelScreen'
@@ -1698,7 +1701,7 @@ class Game:
                     bigboy3 = PerdixNormal(random.randrange(0, 1200), -100, 600, 1000, 3, 2)
                     bigboy3.hp = 800
                     partridgesNormal.add(bigboy3)
-                if score == 40:
+                if score >= 40:
                     self.level03Done = True
                     self.saveHandler()
                     self.level = 'endLevelScreen'
@@ -1773,7 +1776,7 @@ class Game:
                     bigsniper2 = PerdixSniper(1300, 20, 3, 3, theCat.rect.x, theCat.rect.y)
                     bigsniper2.hp = 900
                     partridgesNormal.add(bigsniper2)
-                if score == 50:
+                if score >= 50:
                     self.level04Done = True
                     self.saveHandler()
                     self.level = 'endLevelScreen'
