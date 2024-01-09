@@ -1547,7 +1547,7 @@ class Game:
                     partridgesNormal.add(PerdixShooter(-200, 200, 2, 3))
                     partridgesNormal.add(PerdixShooter(-600, 100, 2, 3))
                 if self.secCounter == 12:
-                    powerupsGroup.add(powerup(500, 20, 1.25, "HP"))
+                    powerupsGroup.add(powerup(500, 20, 300, "HP"))
                 if self.secCounter == 15:
                     partridgesNormal.add(PerdixNormal(0, -100, 650, 1000, 2, 2))
                     partridgesNormal.add(PerdixNormal(240, -100, 650, 1000, 2, 2))
@@ -1562,7 +1562,7 @@ class Game:
                     bigboy.hp = 2000
                     partridgesNormal.add(bigboy)
                 if self.secCounter == 25:
-                    powerupsGroup.add(powerup(-500, 20, 1.5, "HP"))
+                    powerupsGroup.add(powerup(-500, 20, 300, "HP"))
                 if self.secCounter == 30:
                     for x in range(10):
                         partridgesNormal.add(PerdixNormal(random.randint(0, 1000), -100, 600, 500, 2, 1))
@@ -1636,7 +1636,7 @@ class Game:
                     partridgesNormal.add(PerdixShooter(-100, 200, 2, 3))
                     partridgesNormal.add(PerdixShooter(1200, 100, 2, 3))
                 if self.secCounter == 35:
-                    powerupsGroup.add(powerup(-500, 20, 1.5, "HP"))
+                    powerupsGroup.add(powerup(-500, 20, 300, "HP"))
                 if self.secCounter == 40:
                     partridgesNormal.add(PerdixSniper(-100, -100, 2, 2, theCat.rect.x, theCat.rect.y))
                     bigboy = PerdixNormal(0, -100, 600, 800, 3, 2)
@@ -1785,7 +1785,7 @@ class Game:
                 if self.secCounter == 25:
                     powerupsGroup.add(powerup(600, 20, 2, 'DMG'))
                 if self.secCounter == 26:
-                    powerupsGroup.add(powerup(600, 20, 2, 'HP'))
+                    powerupsGroup.add(powerup(600, 20, 200, 'HP'))
                 if self.secCounter == 30:
                     bigsniper = PerdixSniper(-300, 20, 3, 3, theCat.rect.x, theCat.rect.y)
                     bigsniper.hp = 900
